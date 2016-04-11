@@ -2,4 +2,84 @@
 <!DOCTYPE configuration
   PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-config.dtd">
-<configuration></configuration>
+<configuration>
+	<!-- 
+		MyBatis可以引用外部properties文件，也可以通过property元素配置 
+		property属性可以在整个配置文件中引用的到${password}
+		
+		MyBatis将会从三处加载property：
+		1. 加载properties元素配置的属性
+		2. 加载类路径下或resource/url属性指定的外部property文件
+		3. 加载作为创建SqlSessionFactory方法的Property参数
+		后面的属性将覆盖前面的同名属性
+	-->
+	<properties resource="db.properties">
+		<property name="password" value="root"/>
+	</properties>
+	<!-- 
+		settings用于全局配置MyBatis的行为，包括缓存、加载方式、默认值等
+	 -->
+	<settings>
+		<!-- 是否启用缓存 true/false， 默认true -->
+		<setting name="cacheEnabled" value="true"/>
+		<!-- 是否延迟加载关联属性true/false，默认true，可以被fetchType覆盖-->
+		<setting name="lazyLoadingEnabled" value="true"/>
+		<!-- 是否允许一条语句返回多个结果集true/false，默认true -->
+		<setting name="multipleResultSetsEnabled" value="true"/>
+		<!-- 是否使用数据表列标签代替列名称true/false，默认true，依赖数据库驱动实现 -->
+		<setting name="useColumnLabel" value="true"/>
+		<!-- 是否启用自动生成key，true/false, 默认false -->
+		<setting name="useGeneratedKeys" value="false"/>
+		<setting name="autoMappingBehavior" value="PARTIAL"/>
+		<setting name="defaultExecutorType" value="SIMPLE"/>
+		<setting name="defaultStatementTimeout" value="25"/>
+		<setting name="defaultFetchSize" value="100"/>
+		<setting name="safeRowBoundsEnabled" value="false"/>
+		<setting name="mapUnderscoreToCamelCase" value="false"/>
+		<setting name="localCacheScope" value="SESSION"/>
+		<setting name="jdbcTypeForNull" value="OTHER"/>
+		<setting name="lazyLoadTriggerMethods" value="equals,clone,hashCode,toString"/>
+	</settings>
+	
+	<!-- 
+		为java全限定类名定义别名
+		内置默认的java类型别名：
+		_int -- int
+		_integer -- int
+		int -- Integer
+		integer -- Integer
+		string -- String
+		object -- Object
+		map -- Map
+		hashmap -- HashMap
+		list -- List
+	 -->
+	<typeAliases>
+		<typeAlias alias="user" type="com.study.mybatis.domain.User"/>
+		<!-- 为package下所有的bean设置别名，为首字母小写的类名，遇到@Alias以注解配置为准 -->
+		<package name="com.study.mybatis.domain"/>
+	</typeAliases>
+	
+	<!-- 
+		用于从结果集或设置PreparedStatement时映射java类
+		自定义handler，实现TypeHandler接口或继承BaseTypeHandler
+	 -->
+	<typeHandlers>
+		<package name=""/>
+		<typeHandler handler="com.study.mybatis.handler.XXXHandler" javaType="com.study.mybatis.domain.XXX" jdbcType=""/>
+	</typeHandlers>
+	
+	
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC"/>
+			<dataSource type="POOLED">
+				<property name="driver" value="${driver}"/>
+				<property name="url" value=""/>
+				<property name="username" value="root"/>
+				<property name="password" value="root"/>
+			</dataSource>
+		</environment>
+	</environments>
+</configuration>
+

@@ -69,10 +69,49 @@
 		<typeHandler handler="com.study.mybatis.handler.XXXHandler" javaType="com.study.mybatis.domain.XXX" jdbcType=""/>
 	</typeHandlers>
 	
+	<!-- 
+		ObjectFactory 对象用于创建result对象，默认的ObjectFactory 仅仅实例化目标类通过其构造方法。
+		可以通过继承DefaultObjectFactory 来重写默认的行为
+	 -->
+	<objectFactory type="xxx">
+		<property name="" value=""/>
+	</objectFactory>
 	
+	<!-- 
+		plugins允许在执行sql过程中特定的地点拦截对指定方法的调用
+		•Executor (update, query, flushStatements, commit, rollback, getTransaction, close, isClosed)
+		•ParameterHandler (getParameterObject, setParameters)
+		•ResultSetHandler (handleResultSets, handleOutputParameters)
+		•StatementHandler (prepare, parameterize, batch, update, query)
+		自定义plugin需实现Interceptor接口
+	 -->
+	<plugins>
+		<plugin interceptor="xxx">
+			<property name="" value=""/>
+		</plugin>
+	</plugins>
+	
+	<!-- 
+		environments可用于配置多套环境，例如开发、测试环境
+	 -->
 	<environments default="development">
+		<!-- 每个environment都 要有独立的id，默认为development-->
 		<environment id="development">
-			<transactionManager type="JDBC"/>
+			<!-- 
+				两种transaction type:
+				JDBC: 通过java.sql.Connection对象完成对事务的提交、回滚等操作
+				MANAGED:MyBatis自身不会去实现事务管理，而是让程序的运行容器如（JBOSS，Weblogic）来实现对事务的管理 
+			 -->
+			<transactionManager type="JDBC">
+				<property name="" value=""/>
+			</transactionManager>
+			<!-- 
+				配置数据源
+				三种内置的数据源类型：
+				UNPOOLED：不使用连接池，针对每次请求创建或关闭连接
+				POOLED：使用连接池
+				JNDI:
+			 -->
 			<dataSource type="POOLED">
 				<property name="driver" value="${driver}"/>
 				<property name="url" value=""/>
@@ -81,5 +120,27 @@
 			</dataSource>
 		</environment>
 	</environments>
+	
+	<!-- MyBatis能够执行不同的语句，这取决于您的数据库供应商 -->
+	<databaseIdProvider type="DB_VENDOR">
+		<!-- property 为不同的数据库设置别名 -->
+		<property name="SQL Server" value="sqlserver"/>
+		<property name="DB2" value="db2"/>
+		<property name="Oracle" value="oracle" />
+	</databaseIdProvider>
+	
+	<!-- 
+		mappers用来告诉MyBatis sql映射文件的位置
+		MyBatis支持类路径下的资源路径、url或mapper类的类名或所在包名 
+	-->
+	<mappers>
+		<!-- 类路径下的资源 -->
+		<mapper resource="xxxMapper.xml"/>
+		<!-- URL资源 -->
+		<mapper url="file:///xxxMapper.xml"/>
+		<!-- Mapper类的全限定类名或包名 -->
+		<mapper class="xxxMapper"/>
+		<package name="xxx"/>
+	</mappers>
 </configuration>
 

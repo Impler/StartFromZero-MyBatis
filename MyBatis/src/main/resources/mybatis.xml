@@ -29,4 +29,8 @@
 			</dataSource>
 		</environment>
 	</environments>
+	
+	<mappers>
+		<mapper resource="UserMapper.xml"/>
+	</mappers>
 </configuration>

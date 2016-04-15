@@ -13,7 +13,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
-public class MyBatisConfigurationTest {
+public class TestMyBatisConfiguration {
 
 	/**
 	 * SqlSessionFactoryBuilder.builder方法，传递mybatis配置流

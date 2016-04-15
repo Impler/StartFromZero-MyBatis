@@ -9,7 +9,7 @@
 		<result column="password" property="password"/>
 		<result column="telnumber" property="telNumber"/>
 		<result column="email" property="email"/>
-		<result column="active" property="active"/>
+		<result column="active" property="active" javaType="boolean" jdbcType="varchar"/>
 		<result column="createtime" property="createTime"/>
 	</resultMap>
 	<select id="select" resultType="list" resultMap="user">

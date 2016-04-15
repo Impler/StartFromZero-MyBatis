@@ -1,6 +1,5 @@
 package com.study.mybatis.test;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 

@@ -22,7 +22,7 @@ public abstract class AbstractDao<T extends BaseDao<E>, E> implements BaseDao<E>
 	}
 	@Override
 	public int insert(E entity) {
-		return 0;
+		return getDao().insert(entity);
 	}
 	@Override
 	public int update(E entity) {

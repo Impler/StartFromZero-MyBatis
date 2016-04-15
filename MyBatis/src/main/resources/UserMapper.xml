@@ -3,17 +3,22 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.study.mybatis.dao.UserDao">
-
-	<resultMap type="com.study.mybatis.domain.User" id="user">
+	<resultMap type="user" id="user">
 		<id column="id" property="id"/>
 		<result column="username" property="username"/>
 		<result column="password" property="password"/>
 		<result column="telnumber" property="telNumber"/>
 		<result column="email" property="email"/>
 		<result column="active" property="active"/>
-		<result column="createtime" property="createTime" javaType="java.util.Date"/>
+		<result column="createtime" property="createTime"/>
 	</resultMap>
 	<select id="select" resultType="list" resultMap="user">
 		select * from t_useraccount
 	</select>
+	<insert id="insert" parameterType="user" useGeneratedKeys="true" keyColumn="id">
+		<![CDATA[insert into t_useraccount 
+			(username, password, telnumber, email active, createtime) 
+			values(#{username}, #{password}, #{telNumber}, #{email}, #{active}, #{createTime})
+		]]>
+	</insert>
 </mapper>

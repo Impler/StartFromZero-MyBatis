@@ -9,16 +9,17 @@
 		<result column="password" property="password"/>
 		<result column="telnumber" property="telNumber"/>
 		<result column="email" property="email"/>
-		<result column="active" property="active" javaType="boolean" jdbcType="varchar"/>
+		<result column="active" property="active" typeHandler="GenericEnumHandler" javaType="com.study.mybatis.commenum.UserActiveStatusEnum"/>
+		<result column="role" property="role" typeHandler="GenericEnumHandler" javaType="com.study.mybatis.commenum.UserRoleEnum"/>
 		<result column="createtime" property="createTime"/>
 	</resultMap>
 	<select id="select" resultType="list" resultMap="user">
 		select * from t_useraccount
 	</select>
-	<insert id="insert" parameterType="user" useGeneratedKeys="true" keyColumn="id">
+	<insert id="insert" parameterType="user" useGeneratedKeys="true" keyProperty="id">
 		<![CDATA[insert into t_useraccount 
-			(username, password, telnumber, email active, createtime) 
-			values(#{username}, #{password}, #{telNumber}, #{email}, #{active}, #{createTime})
+			(username, password, telnumber, email, active, role, createtime) 
+			values(#{username}, #{password}, #{telNumber}, #{email}, #{active, typeHandler=GenericEnumHandler}, #{role, typeHandler=GenericEnumHandler}, #{createTime})
 		]]>
 	</insert>
 </mapper>

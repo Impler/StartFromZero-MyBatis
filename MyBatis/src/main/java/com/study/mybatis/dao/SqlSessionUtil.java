@@ -34,6 +34,6 @@ public class SqlSessionUtil {
 
 	
 	public static SqlSession getSession(){
-		return getSqlSessionFactory().openSession();
+		return getSqlSessionFactory().openSession(true);
 	}
 }

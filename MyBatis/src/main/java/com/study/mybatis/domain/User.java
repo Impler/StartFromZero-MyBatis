@@ -2,6 +2,9 @@ package com.study.mybatis.domain;
 
 import java.util.Date;
 
+import com.study.mybatis.commenum.UserActiveStatusEnum;
+import com.study.mybatis.commenum.UserRoleEnum;
+
 public class User {
 
 	private int id;
@@ -9,7 +12,8 @@ public class User {
 	private String password;
 	private String telNumber;
 	private String email;
-	private boolean active;
+	private UserActiveStatusEnum active;
+	private UserRoleEnum role;
 	private Date createTime;
 	
 	public User() {
@@ -46,10 +50,10 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public boolean isActive() {
+	public UserActiveStatusEnum getActive() {
 		return active;
 	}
-	public void setActive(boolean active) {
+	public void setActive(UserActiveStatusEnum active) {
 		this.active = active;
 	}
 	public Date getCreateTime() {
@@ -58,10 +62,17 @@ public class User {
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
+	
+	public UserRoleEnum getRole() {
+		return role;
+	}
+	public void setRole(UserRoleEnum role) {
+		this.role = role;
+	}
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", username=" + username + ", password=" + password + ", telNumber=" + telNumber
-				+ ", email=" + email + ", active=" + active + ", createTime=" + createTime + "]";
+				+ ", email=" + email + ", active=" + active + ", role=" + role + ", createTime=" + createTime + "]";
 	}
 	
 }

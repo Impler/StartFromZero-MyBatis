@@ -3,15 +3,40 @@
   PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
+	<!-- 
+		配置元素要遵循以下顺序：
+		properties,
+		settings,
+		typeAliases,
+		typeHandlers,
+		objectFactory,
+		objectWrapperFactory,
+		plugins,
+		environments,
+		databaseIdProvider,
+		mappers
+	 -->
 	<properties resource="db.properties">
 		<property name="test.jdbc.password" value="root1"/>
 	</properties>
 	<settings>
 		<setting name="logImpl" value="LOG4J"/>
 	</settings>
+	<!-- 
+		配置别名，避免输入全限定包名的不便
+	 -->
 	<typeAliases>
 		<typeAlias type="com.study.mybatis.domain.User" alias="user"/>
+		<typeAlias type="com.study.mybatis.typehandler.GenericEnumHandler" alias="GenericEnumHandler"/>
 	</typeAliases>
+	<typeHandlers>
+		<!-- 
+			针对枚举类型的类型转换，mybatis提供了两个默认的实现：
+			org.apache.ibatis.type.EnumOrdinalTypeHandler
+			org.apache.ibatis.type.EnumTypeHandler
+			但其局限性也非常明显，EnumTypeHandler根据枚举name属性完成映射，EnumOrdinalTypeHandler根据ordinal属性完成映射
+		 -->
+	</typeHandlers>
 	<!-- 配置数据源，默认开发环境数据源 -->
 	<environments default="dev">
 		<!-- 开发环境 -->

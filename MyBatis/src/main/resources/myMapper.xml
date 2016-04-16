@@ -3,5 +3,10 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="">
-	
+	<!-- 
+		useGeneratedKeys：使用主键自增，默认false
+		keyColumn： Sets the name of the column in the table with a generated key. This is only required in certain databases (like PostgreSQL) when the key column is not the first column in the table.
+		keyProperty：设置主键自增列，用于getGeneratedKeys获取，默认不设置
+	 -->
+	<insert id="" useGeneratedKeys="true" keyColumn="" keyProperty="" parameterType=""></insert>
 </mapper>

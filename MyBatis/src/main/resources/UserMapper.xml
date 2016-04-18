@@ -14,10 +14,13 @@
 		<result column="createtime" property="createTime"/>
 	</resultMap>
 	<select id="select" resultType="list" resultMap="user">
-		select * from t_useraccount
+		<![CDATA[
+			select * from t_useraccount
+		]]>
 	</select>
 	<insert id="insert" parameterType="user" useGeneratedKeys="true" keyProperty="id">
-		<![CDATA[insert into t_useraccount 
+		<![CDATA[
+		insert into t_useraccount 
 			(username, password, telnumber, email, active, role, createtime) 
 			values(#{username}, #{password}, #{telNumber}, #{email}, #{active, typeHandler=GenericEnumHandler}, #{role, typeHandler=GenericEnumHandler}, #{createTime})
 		]]>
@@ -37,4 +40,66 @@
 			delete from t_useraccount where id=#{id};
 		]]>
 	</delete>
+	<!-- Dynamic sql -->
+	<!-- if -->
+	<select id="selectByCondition" parameterType="user" resultMap="user">
+		select * from t_useraccount where 1=1 
+		<if test="email != null">
+			and email like CONCAT('%', #{email}, '%') 
+		</if>
+		<!-- OGNL表达式  -->
+		<if test="role != null and role.roleId != null">
+			<!-- 或 role = #{role, typeHandler=GenericEnumHandler} -->
+			and role = #{role.roleId} 
+		</if>
+	</select>
+	<!-- choose when otherwise -->
+	<select id="selectByCondition1" parameterType="user" resultMap="user">
+		select * from t_useraccount where 1=1 
+		<choose>
+			<!-- 以下字段没有任何逻辑关系，只为了测试choose when的使用 -->
+			<when test="email!=null">
+				and email like CONCAT('%', #{email}, '%') 
+			</when>
+			<when test="role!=null and role.roleId != null">
+				and role = #{role.roleId}
+			</when>
+			<otherwise>
+				and email like '%%'
+			</otherwise>
+		</choose>
+	</select>
+	<!-- where -->
+	<select id="selectByCondition2" parameterType="user" resultMap="user">
+		select * from t_useraccount
+		<where>
+			<if test="email != null">
+				and email like CONCAT('%', #{email}, '%')
+			</if>
+			<if test="role != null and role.roleId != null">
+				or role = #{role.roleId}
+			</if>
+		</where>
+	</select>
+	<!-- trim -->
+	<select id="selectByCondition3" parameterType="user" resultMap="user">
+		select * from t_useraccount
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="email != null">
+				and email like CONCAT('%', #{email}, '%')
+			</if>
+			<if test="role != null and role.roleId != null">
+				or role = #{role.roleId}
+			</if>
+		</trim>
+	</select>
+	<update id="update1" parameterType="user">
+		update t_useraccount
+		<set>
+			<if test="email != null">email = #{email}</if>
+			<if test="role != null and role.roleId != null">role = #{role.roleId}</if>
+			<where></where>
+		</set>
+		where id=#{id}
+	</update>
 </mapper>

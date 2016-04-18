@@ -49,6 +49,10 @@ public abstract class AbstractDao<T extends BaseDao<E, K>, E, K> implements Base
 	public E selectOneByKey(K key) {
 		return getDao().selectOneByKey(key);
 	}
-	
+
+	@Override
+	public List<E> selectByCondition(E entity) {
+		return getDao().selectByCondition(entity);
+	}
 	
 }

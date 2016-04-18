@@ -17,6 +17,7 @@ public class TestMyBatisCRUD {
 
 	private UserDao userDao = new UserDaoImpl();
 	
+	//test CRUD start
 	@Test
 	public void testSelect(){
 		List<User> users = userDao.select();
@@ -70,4 +71,126 @@ public class TestMyBatisCRUD {
 			System.out.println("testDelete after: " + u);
 		}
 	}
+	//test CRUD end 
+	
+	//test dynamic sql start
+	
+	/**
+	 * test <if />
+	 */
+	@Test
+	public void testSelectByCondition(){
+		User user = new User();
+		List<User> users = userDao.selectByCondition(user);
+		System.out.println("select by condition: " + user);
+		for(User u : users){
+			System.out.println(u);
+		}
+		user.setEmail("3");
+		users = userDao.selectByCondition(user);
+		System.out.println("select by condition: " + user);
+		for(User u : users){
+			System.out.println(u);
+		}
+		user.setRole(UserRoleEnum.ADMIN);
+		users = userDao.selectByCondition(user);
+		System.out.println("select by condition: " + user);
+		for(User u : users){
+			System.out.println(u);
+		}
+	}
+	
+	/**
+	 * test <choose/> <when /> <otherwise />
+	 */
+	@Test
+	public void testSelectByCondition1(){
+		User user = new User();
+		List<User> users = userDao.selectByCondition1(user);
+		System.out.println("select by condition1: " + user);
+		for(User u : users){
+			System.out.println(u);
+		}
+		user.setEmail("3");
+		users = userDao.selectByCondition1(user);
+		System.out.println("select by condition1: " + user);
+		for(User u : users){
+			System.out.println(u);
+		}
+		user.setEmail(null);;
+		user.setRole(UserRoleEnum.ADMIN);
+		users = userDao.selectByCondition1(user);
+		System.out.println("select by condition1: " + user);
+		for(User u : users){
+			System.out.println(u);
+		}
+	}
+	/**
+	 * test <where />
+	 */
+	@Test
+	public void testSelectByCondition2(){
+		User user = new User();
+		List<User> users = userDao.selectByCondition2(user);
+		System.out.println("select by condition2: " + user);
+		for(User u : users){
+			System.out.println(u);
+		}
+		user.setEmail("3");
+		users = userDao.selectByCondition2(user);
+		System.out.println("select by condition2: " + user);
+		for(User u : users){
+			System.out.println(u);
+		}
+		user.setRole(UserRoleEnum.ADMIN);
+		users = userDao.selectByCondition2(user);
+		System.out.println("select by condition2: " + user);
+		for(User u : users){
+			System.out.println(u);
+		}
+	}
+	
+	/**
+	 * test <trim />
+	 */
+	@Test
+	public void testSelectByCondition3(){
+		User user = new User();
+		List<User> users = userDao.selectByCondition3(user);
+		System.out.println("select by condition3: " + user);
+		for(User u : users){
+			System.out.println(u);
+		}
+		user.setEmail("3");
+		users = userDao.selectByCondition3(user);
+		System.out.println("select by condition3: " + user);
+		for(User u : users){
+			System.out.println(u);
+		}
+		user.setRole(UserRoleEnum.ADMIN);
+		users = userDao.selectByCondition3(user);
+		System.out.println("select by condition3: " + user);
+		for(User u : users){
+			System.out.println(u);
+		}
+	}
+	
+	@Test
+	public void testUpdate1(){
+		User user = new User();
+		user.setId(1);
+		User u = userDao.selectOneByKey(user.getId());
+		user.setEmail("update1" + u.getEmail());
+		System.out.println("update1 before:" + u);
+		userDao.update1(user);
+		System.out.println("update:" + user);
+		u = userDao.selectOneByKey(user.getId());
+		System.out.println("update1 after:" + u);
+		user.setRole(UserRoleEnum.ADMIN);
+		userDao.update1(user);
+		System.out.println("update:" + user);
+		System.out.println("update1 after:" + u);
+	}
+	//test dynamic sql end
+
 }

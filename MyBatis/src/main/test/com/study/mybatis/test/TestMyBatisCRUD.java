@@ -21,7 +21,7 @@ public class TestMyBatisCRUD {
 	public void testSelect(){
 		List<User> users = userDao.select();
 		for(User u : users){
-			System.out.println(u);
+			System.out.println("testSelect: " + u);
 		}
 	}
 	
@@ -38,9 +38,36 @@ public class TestMyBatisCRUD {
 		UserRoleEnum role = EnumUtil.getEnumConstant(UserRoleEnum.class, new Random().nextInt(2) + 1);
 		u.setRole(role);
 		userDao.insert(u);
-		System.out.println(u);
-		
+		System.out.println("testInsert: " + u);
 	}
 	
-
+	
+	@Test
+	public void testSelectOneByKey(){
+		User u = userDao.selectOneByKey(1);
+		System.out.println("testSelectOneByKey: " + u);
+	}
+	
+	@Test
+	public void testUpdate(){
+		User u = userDao.selectOneByKey(1);
+		System.out.println("testUpdate before: " + u);
+		u.setEmail("update" + u.getEmail());
+		userDao.update(u);
+		System.out.println("testUpdate after: " + u);
+	}
+	
+	@Test
+	public void testDelete(){
+		List<User> users = userDao.select();
+		for(User u : users){
+			System.out.println("testDelete before: " + u);
+		}
+		userDao.delete(users.get(users.size() - 1).getId());
+		
+		users = userDao.select();
+		for(User u : users){
+			System.out.println("testDelete after: " + u);
+		}
+	}
 }

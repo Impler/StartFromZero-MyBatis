@@ -22,4 +22,19 @@
 			values(#{username}, #{password}, #{telNumber}, #{email}, #{active, typeHandler=GenericEnumHandler}, #{role, typeHandler=GenericEnumHandler}, #{createTime})
 		]]>
 	</insert>
+	<select id="selectOneByKey" resultMap="user">
+		<![CDATA[
+			select * from t_useraccount where id = #{id};
+		]]>
+	</select>
+	<update id="update" parameterType="user">
+		<![CDATA[
+			update t_useraccount set email=#{email} where id=#{id}
+		]]>
+	</update>
+	<delete id="delete">
+		<![CDATA[
+			delete from t_useraccount where id=#{id};
+		]]>
+	</delete>
 </mapper>

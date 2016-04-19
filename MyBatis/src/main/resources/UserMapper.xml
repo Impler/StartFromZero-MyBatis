@@ -104,7 +104,7 @@
 		</set>
 		where id=#{id}
 	</update>
-	<!-- foreach -->
+	<!-- foreach array-->
 	<select id="selectByIds" parameterType="list" resultMap="user">
 		select * from t_useraccount
 		<where>
@@ -117,6 +117,7 @@
 			</if>
 		</where>
 	</select>
+	<!-- foreach list-->
 	<select id="selectByIds1" parameterType="list" resultMap="user">
 		select * from t_useraccount
 		<where>
@@ -129,6 +130,7 @@
 			</if>
 		</where>
 	</select>
+	<!-- foreach multi list-->
 	<select id="selectByRoleAndStatus" resultMap="user">
 		select * from t_useraccount
 		<where>
@@ -146,6 +148,7 @@
 			</if>
 		</where>
 	</select>
+	<!-- foreach map-->
 	<select id="selectByRoleAndStatus1" resultMap="user">
 		select * from t_useraccount
 		<where>

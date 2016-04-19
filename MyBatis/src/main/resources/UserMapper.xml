@@ -99,7 +99,6 @@
 		<set>
 			<if test="email != null">email = #{email},</if>
 			<if test="role != null and role.roleId != null">role = #{role.roleId}</if>
-			<where></where>
 		</set>
 		where id=#{id}
 	</update>

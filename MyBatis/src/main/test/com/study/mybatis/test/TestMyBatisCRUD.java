@@ -1,7 +1,10 @@
 package com.study.mybatis.test;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.junit.Test;
@@ -175,21 +178,142 @@ public class TestMyBatisCRUD {
 		}
 	}
 	
+	/**
+	 * test <set />
+	 */
 	@Test
 	public void testUpdate1(){
 		User user = new User();
 		user.setId(1);
 		User u = userDao.selectOneByKey(user.getId());
+		
 		user.setEmail("update1" + u.getEmail());
 		System.out.println("update1 before:" + u);
 		userDao.update1(user);
 		System.out.println("update:" + user);
 		u = userDao.selectOneByKey(user.getId());
 		System.out.println("update1 after:" + u);
+		
 		user.setRole(UserRoleEnum.ADMIN);
 		userDao.update1(user);
 		System.out.println("update:" + user);
+		u = userDao.selectOneByKey(user.getId());
 		System.out.println("update1 after:" + u);
+	}
+	
+	/**
+	 * <foreach /> array
+	 */
+	@Test
+	public void testSelectByIds() {
+		Integer[] ids = {};
+		List<User> users = userDao.selectByIds(ids);
+		System.out.println("SelectByIds: " + ids);
+		for(User u : users){
+			System.out.println(u);
+		}
+		
+		ids = new Integer[]{1, 3, 23};
+		users = userDao.selectByIds(ids);
+		System.out.println("SelectByIds: " + ids);
+		for(User u : users){
+			System.out.println(u);
+		}
+	}
+	
+	/**
+	 * <foreach /> list
+	 */
+	@Test
+	public void testSelectByIds1() {
+		List<Integer> ids = null;
+		List<User> users = userDao.selectByIds1(ids);
+		System.out.println("SelectByIds1: " + ids);
+		for(User u : users){
+			System.out.println(u);
+		}
+		
+		ids = new ArrayList<Integer>();
+		ids.add(1);
+		ids.add(3);
+		ids.add(23);
+		users = userDao.selectByIds1(ids);
+		System.out.println("SelectByIds1: " + ids);
+		for(User u : users){
+			System.out.println(u);
+		}
+	}
+	
+	/**
+	 * <foreach /> param0,1...
+	 */
+	@Test
+	public void testSelectByRoleAndStatus() {
+		List<Integer> roleIds = new ArrayList<Integer>();
+		List<Integer> activeIds = new ArrayList<Integer>();
+		roleIds.add(UserRoleEnum.ADMIN.getInt());
+		roleIds.add(UserRoleEnum.USER.getInt());
+		List<User> users = userDao.selectByRoleAndStatus(roleIds, activeIds);
+		System.out.println("SelectByRoleAndStatus: roleIds:" + roleIds + ",activeIds:" + activeIds);
+		for(User u : users){
+			System.out.println(u);
+		}
+		
+		activeIds.add(UserActiveStatusEnum.ACTIVE.getInt());
+		users = userDao.selectByRoleAndStatus(roleIds, activeIds);
+		System.out.println("SelectByRoleAndStatus: roleIds:" + roleIds + ",activeIds:" + activeIds);
+		for(User u : users){
+			System.out.println(u);
+		}
+	}
+	
+	/**
+	 * <foreach /> @Param
+	 */
+	@Test
+	public void testSelectByRoleAndStatus1() {
+		List<Integer> roleIds = new ArrayList<Integer>();
+		List<Integer> activeIds = new ArrayList<Integer>();
+		roleIds.add(UserRoleEnum.ADMIN.getInt());
+		roleIds.add(UserRoleEnum.USER.getInt());
+		List<User> users = userDao.selectByRoleAndStatus1(roleIds, activeIds);
+		System.out.println("SelectByRoleAndStatus1: roleIds:" + roleIds + ",activeIds:" + activeIds);
+		for(User u : users){
+			System.out.println(u);
+		}
+		
+		activeIds.add(UserActiveStatusEnum.ACTIVE.getInt());
+		users = userDao.selectByRoleAndStatus1(roleIds, activeIds);
+		System.out.println("SelectByRoleAndStatus1: roleIds:" + roleIds + ",activeIds:" + activeIds);
+		for(User u : users){
+			System.out.println(u);
+		}
+	}
+	
+	/**
+	 * <foreach /> map
+	 */
+	@Test
+	public void testSelectByRoleAndStatus2() {
+		Map<String, List<Integer>> map = new HashMap<String, List<Integer>>();
+		List<Integer> roleIds = new ArrayList<Integer>();
+		List<Integer> activeIds = new ArrayList<Integer>();
+		map.put("roleIds", roleIds);
+		map.put("statusIds", activeIds);
+		roleIds.add(UserRoleEnum.ADMIN.getInt());
+		roleIds.add(UserRoleEnum.USER.getInt());
+		List<User> users = userDao.selectByRoleAndStatus1(map);
+		System.out.println("SelectByRoleAndStatus1: roleIds:" + roleIds + ",activeIds:" + activeIds);
+		for(User u : users){
+			System.out.println(u);
+		}
+		
+		activeIds.add(UserActiveStatusEnum.ACTIVE.getInt());
+		users = userDao.selectByRoleAndStatus1(map);
+		System.out.println("SelectByRoleAndStatus1: roleIds:" + roleIds + ",activeIds:" + activeIds);
+		for(User u : users){
+			System.out.println(u);
+		}
 	}
 	//test dynamic sql end
 

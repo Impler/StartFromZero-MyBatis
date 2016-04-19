@@ -93,13 +93,73 @@
 			</if>
 		</trim>
 	</select>
+	<!-- set -->
 	<update id="update1" parameterType="user">
 		update t_useraccount
 		<set>
-			<if test="email != null">email = #{email}</if>
+			<if test="email != null">email = #{email},</if>
 			<if test="role != null and role.roleId != null">role = #{role.roleId}</if>
 			<where></where>
 		</set>
 		where id=#{id}
 	</update>
+	<!-- foreach -->
+	<select id="selectByIds" parameterType="list" resultMap="user">
+		select * from t_useraccount
+		<where>
+			<!-- 参数为array -->
+			<if test="array!=null and array.length>0">
+				id in 
+				<foreach collection="array" item="item" open="(" close=")" separator=",">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+	</select>
+	<select id="selectByIds1" parameterType="list" resultMap="user">
+		select * from t_useraccount
+		<where>
+			<!-- 参数为list -->
+			<if test="list!=null and list.size()>0">
+				id in 
+				<foreach collection="list" item="item" open="(" close=")" separator=",">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+	</select>
+	<select id="selectByRoleAndStatus" resultMap="user">
+		select * from t_useraccount
+		<where>
+			<if test="param1!=null and param1.size() > 0">
+				role in 
+				<foreach collection="param1" item="item" open="(" close=")" separator=",">
+					#{item}
+				</foreach>
+			</if>
+			<if test="param2!=null and param2.size() > 0">
+				and active in 
+				<foreach collection="param2" item="item" open="(" close=")" separator=",">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+	</select>
+	<select id="selectByRoleAndStatus1" resultMap="user">
+		select * from t_useraccount
+		<where>
+			<if test="roleIds!=null and roleIds.size() > 0">
+				role in 
+				<foreach collection="roleIds" item="item" open="(" close=")" separator=",">
+					#{item}
+				</foreach>
+			</if>
+			<if test="statusIds!=null and statusIds.size() > 0">
+				and active in 
+				<foreach collection="statusIds" item="item" open="(" close=")" separator=",">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+	</select>
 </mapper>

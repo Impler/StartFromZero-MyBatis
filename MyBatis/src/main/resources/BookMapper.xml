@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.mybatis.dao.BookDao">
+
+	<resultMap id="author" type="author">
+		<id column="author_id" property="id" />
+		<result column="author_name" property="name" />
+		<result column="author_country" property="country" />
+	</resultMap>
+	
+	<resultMap type="book" id="baseBook">
+		<id column="book_id" property="id" />
+		<result column="book_name" property="name" />
+		<result column="book_description" property="description" />
+		<result column="book_publish_date" property="publishDate" />
+	</resultMap>
+	<!-- 
+		级联查询
+		Mybatis实现has-a级联查询有两种方式：
+		1 内嵌select：执行其他映射sql查询级联数据
+		2 内嵌result：使用连接查询级联数据
+	 -->
+	 <!-- 
+	 	1 内嵌select 
+	 	会引起N+1问题，为每条结果集多执行一条sql查询级联数据。可以采用fetchType="lazy"的策略
+	 -->
+	<resultMap type="book" id="bookByNestedSelect" extends="baseBook">
+		<association column="author_id" property="author" select="selectAuthorById" />
+	</resultMap>
+
+	<select id="selectAuthorById" resultMap="author">
+		select * from t_author where author_id = #{id}
+	</select>
+	<select id="selectByNestedSelect" resultMap="bookByNestedSelect">
+		select * from t_book;
+	</select>
+	
+	<!-- 
+		2 内嵌result：
+	 -->
+	<resultMap type="book" id="bookByNestedResult" extends="baseBook">
+		<association property="author" resultMap="author"/>
+	</resultMap>
+	<select id="selectByNestedResult" resultMap="bookByNestedResult">
+		select * from t_book b
+		left join t_author a
+		on a.author_id = b.author_id
+	</select>
+	
+	<!-- 
+		使用存储过程(实验未成功)
+	 -->
+	<resultMap type="book" id="bookByProcedure" extends="baseBook">
+		<association property="author" resultSet="authors" javaType="author" column="author_id" foreignColumn="author_id" />
+	</resultMap>
+	<select id="selectByProcedure" resultSets="books,authors" resultMap="bookByProcedure"
+		statementType="CALLABLE">
+		{call selectBooksProcedure(1)}
+	</select>
+</mapper>

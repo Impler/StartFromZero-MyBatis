@@ -10,6 +10,12 @@
 		<result column="author_country" property="country" />
 	</resultMap>
 	
+	<resultMap type="post" id="post">
+		<id column="post_id" property="id" />
+		<result column="post_username" property="username"/>
+		<result column="post_content" property="postContent"/>
+	</resultMap>
+	
 	<resultMap type="book" id="baseBook">
 		<id column="book_id" property="id" />
 		<result column="book_name" property="name" />
@@ -26,37 +32,84 @@
 	 	1 内嵌select 
 	 	会引起N+1问题，为每条结果集多执行一条sql查询级联数据。可以采用fetchType="lazy"的策略
 	 -->
-	<resultMap type="book" id="bookByNestedSelect" extends="baseBook">
+	<resultMap type="book" id="bookAndAuthorByNestedSelect" extends="baseBook">
 		<association column="author_id" property="author" select="selectAuthorById" />
 	</resultMap>
 
 	<select id="selectAuthorById" resultMap="author">
 		select * from t_author where author_id = #{id}
 	</select>
-	<select id="selectByNestedSelect" resultMap="bookByNestedSelect">
+	<select id="selectBookAndAuthorByNestedSelect" resultMap="bookAndAuthorByNestedSelect">
 		select * from t_book;
 	</select>
 	
 	<!-- 
 		2 内嵌result：
 	 -->
-	<resultMap type="book" id="bookByNestedResult" extends="baseBook">
+	<resultMap type="book" id="bookAndAuthorByNestedResult" extends="baseBook">
 		<association property="author" resultMap="author"/>
 	</resultMap>
-	<select id="selectByNestedResult" resultMap="bookByNestedResult">
+	<select id="selectBookAndAuthorByNestedResult" resultMap="bookAndAuthorByNestedResult">
 		select * from t_book b
 		left join t_author a
 		on a.author_id = b.author_id
 	</select>
 	
 	<!-- 
-		使用存储过程(实验未成功)
+		使用存储过程，执行两条查询，返回两个结果集，然后在将结果集映射到对象中
+		DELIMITER ;;
+		CREATE DEFINER=`root`@`localhost` PROCEDURE `selectBookAndAuthorProcedure`(IN `authorId` int) 入参变量名不要与任何表中字段名重名
+		BEGIN
+			select * from t_book where author_id = authorId;
+			select * from t_author where author_id = authorId;
+		
+		END
+		;;
+		DELIMITER ;
 	 -->
-	<resultMap type="book" id="bookByProcedure" extends="baseBook">
-		<association property="author" resultSet="authors" javaType="author" column="author_id" foreignColumn="author_id" />
+	<resultMap type="book" id="bookAndAuthorByProcedure" extends="baseBook">
+		<association property="author" resultMap="author" resultSet="authors" javaType="author" column="author_id" foreignColumn="author_id" />
 	</resultMap>
-	<select id="selectByProcedure" resultSets="books,authors" resultMap="bookByProcedure"
+	<select id="selectBookAndAuthorByProcedure" resultSets="books,authors" resultMap="bookAndAuthorByProcedure"
 		statementType="CALLABLE">
-		{call selectBooksProcedure(1)}
+		<!-- 此处hard code数据 -->
+		{call selectBookAndAuthorProcedure(4)}
 	</select>
+	
+	<!-- 
+		MyBatis 使用collection处理“多”的关系，类似于association，也分为两种
+		1 内嵌select
+		2 内嵌result
+	 -->
+	 
+	 <!-- 
+	 	内嵌select
+	  -->
+	 <resultMap type="book" id="bookAndPostsByNestedSelect" extends="baseBook">
+	 	<!-- javatype 指定属性类型，ofType指定集合中元素类型 -->
+	 	<collection property="posts" select="selectPostByBookId" javaType="list" ofType="post" column="book_id"/>
+	 </resultMap>
+	 <select id="selectBookAndPostsByNestedSelect" resultMap="bookAndPostsByNestedSelect">
+	 	select * from t_book;
+	 </select>
+	 <select id="selectPostByBookId" resultMap="post">
+	 	select * from t_post where book_id = #{bookId}
+	 </select>
+	 
+	 
+	 <!-- 
+	 	内嵌result
+	  -->
+	<resultMap type="book" id="bookAndPostsByNestedResult" extends="baseBook">
+		<collection property="posts" resultMap="post" javaType="list" ofType="post" column="book_id" />
+	</resultMap>
+	<select id="selectBookAndPostsByNestedResult" resultMap="bookAndPostsByNestedResult">
+		select * from t_book b
+		left join t_post p
+		on b.book_id = p.book_id
+	</select>
+	
+	<!-- 
+		使用存储过程(略)
+	 -->
 </mapper>

@@ -29,6 +29,7 @@
 		<typeAlias type="com.study.mybatis.domain.User" alias="user"/>
 		<typeAlias type="com.study.mybatis.domain.Book" alias="book"/>
 		<typeAlias type="com.study.mybatis.domain.Author" alias="author"/>
+		<typeAlias type="com.study.mybatis.domain.Post" alias="post"/>
 		<typeAlias type="com.study.mybatis.typehandler.GenericEnumHandler" alias="GenericEnumHandler"/>
 	</typeAliases>
 	<typeHandlers>

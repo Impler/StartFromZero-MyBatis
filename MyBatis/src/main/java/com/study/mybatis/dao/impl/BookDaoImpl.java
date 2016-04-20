@@ -9,18 +9,28 @@ import com.study.mybatis.domain.Book;
 public class BookDaoImpl extends AbstractDao<BookDao, Book, Integer> implements BookDao {
 
 	@Override
-	public List<Book> selectByNestedSelect() {
-		return super.getDao().selectByNestedSelect();
+	public List<Book> selectBookAndAuthorByNestedSelect() {
+		return super.getDao().selectBookAndAuthorByNestedSelect();
 	}
 
 	@Override
-	public List<Book> selectByNestedResult() {
-		return super.getDao().selectByNestedResult();
+	public List<Book> selectBookAndAuthorByNestedResult() {
+		return super.getDao().selectBookAndAuthorByNestedResult();
 	}
 
 	@Override
-	public List<Book> selectByProcedure() {
-		return super.getDao().selectByProcedure();
+	public List<Book> selectBookAndAuthorByProcedure() {
+		return super.getDao().selectBookAndAuthorByProcedure();
+	}
+
+	@Override
+	public List<Book> selectBookAndPostsByNestedSelect() {
+		return super.getDao().selectBookAndPostsByNestedSelect();
+	}
+
+	@Override
+	public List<Book> selectBookAndPostsByNestedResult() {
+		return super.getDao().selectBookAndPostsByNestedResult();
 	}
 
 }

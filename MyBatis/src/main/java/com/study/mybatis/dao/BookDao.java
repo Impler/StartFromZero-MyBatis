@@ -13,17 +13,29 @@ public interface BookDao extends BaseDao<Book, Integer>{
 	 * 1 使用内嵌select
 	 * @return
 	 */
-	public List<Book> selectByNestedSelect();
+	public List<Book> selectBookAndAuthorByNestedSelect();
 	
 	/**
 	 * 2 使用连接查询级联数据
 	 * @return
 	 */
-	public List<Book> selectByNestedResult();
+	public List<Book> selectBookAndAuthorByNestedResult();
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public List<Book> selectByProcedure();
+	public List<Book> selectBookAndAuthorByProcedure();
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public List<Book> selectBookAndPostsByNestedSelect();
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public List<Book> selectBookAndPostsByNestedResult();
 }

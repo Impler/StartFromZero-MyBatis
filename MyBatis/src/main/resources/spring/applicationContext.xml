@@ -12,15 +12,19 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
-	<context:property-placeholder location="classpath:jdbc.properties" />
+	<context:property-placeholder location="classpath:db.properties" />
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" 
- 		p:driverClassName="${dev.jdbc.driverClassName}"
+ 		p:driverClassName="${dev.jdbc.driver}"
 		p:url="${dev.jdbc.url}" 
 		p:username="${dev.jdbc.username}" 
 		p:password="${dev.jdbc.password}" />
-		
+
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="mapperLocations" value="classpath:spring/*Mapper.xml" />
+	</bean>
+	
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSessionFactory" />
 	</bean>
 </beans>

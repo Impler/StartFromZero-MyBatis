@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.mybatis.spring.sqlSessionTemplate.UserDao">
+	<resultMap type="user" id="user">
+		<id column="id" property="id"/>
+		<result column="username" property="username"/>
+		<result column="password" property="password"/>
+		<result column="telnumber" property="telNumber"/>
+		<result column="email" property="email"/>
+		<result column="active" property="active" typeHandler="GenericEnumHandler" javaType="com.study.mybatis.commenum.UserActiveStatusEnum"/>
+		<result column="role" property="role" typeHandler="GenericEnumHandler" javaType="com.study.mybatis.commenum.UserRoleEnum"/>
+		<result column="createtime" property="createTime"/>
+	</resultMap>
+	<select id="select" resultType="list" resultMap="user">
+		<![CDATA[
+			select * from t_useraccount
+		]]>
+	</select>
+	<insert id="insert" parameterType="user" useGeneratedKeys="true" keyProperty="id">
+		<![CDATA[
+		insert into t_useraccount 
+			(username, password, telnumber, email, active, role, createtime) 
+			values(#{username}, #{password}, #{telNumber}, #{email}, #{active, typeHandler=GenericEnumHandler}, #{role, typeHandler=GenericEnumHandler}, #{createTime})
+		]]>
+	</insert>
+	<select id="selectOneByKey" resultMap="user">
+		<![CDATA[
+			select * from t_useraccount where id = #{id};
+		]]>
+	</select>
+	<update id="update" parameterType="user">
+		<![CDATA[
+			update t_useraccount set email=#{email} where id=#{id}
+		]]>
+	</update>
+	<delete id="delete">
+		<![CDATA[
+			delete from t_useraccount where id=#{id};
+		]]>
+	</delete>
+</mapper>

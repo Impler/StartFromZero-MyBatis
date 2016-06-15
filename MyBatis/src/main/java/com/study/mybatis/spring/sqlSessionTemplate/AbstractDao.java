@@ -1,9 +1,12 @@
-package com.study.mybatis.dao;
+package com.study.mybatis.spring.sqlSessionTemplate;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.study.mybatis.dao.BaseDao;
 
 /**
  * 抽象Dao，包含一般增删改查方法
@@ -18,6 +21,9 @@ public abstract class AbstractDao<T extends BaseDao<E, K>, E, K> implements Base
 
 	private Class<T> daoClass;
 	
+	@Autowired
+	private SqlSession sqlSession;
+	
 	@SuppressWarnings("unchecked")
 	public AbstractDao(){
 		//通过反射，获取泛型T的class对象
@@ -25,10 +31,9 @@ public abstract class AbstractDao<T extends BaseDao<E, K>, E, K> implements Base
 	}
 	
 	public T getDao(){
-		// SqlSession是非线程安全的，应该避免作为类的静态或实例成员属性。SqlSession的作用范围应该是方法级的。
-		SqlSession session =  SqlSessionUtil.getSession();
-		return session.getMapper(daoClass);
+		return sqlSession.getMapper(daoClass);
 	}
+	
 	@Override
 	public int insert(E entity) {
 		return getDao().insert(entity);

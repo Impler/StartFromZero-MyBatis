@@ -18,7 +18,7 @@ public class TestSqlSessionTemplate {
 	
 	@Test
 	public void testUser() throws Exception {
-		UserDao userDao = (UserDao) context.getBean("userDao");
+		UserDao userDao = (UserDao) context.getBean("userDaoImpl");
 		System.out.println(userDao.selectOneByKey(1));
 		System.out.println(userDao.selectOneByKey(1));
 	}

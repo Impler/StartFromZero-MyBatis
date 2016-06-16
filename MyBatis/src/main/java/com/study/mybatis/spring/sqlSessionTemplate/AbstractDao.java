@@ -22,6 +22,7 @@ public abstract class AbstractDao<T extends BaseDao<E, K>, E, K> implements Base
 	private Class<T> daoClass;
 	
 	@Autowired
+	// SqlSessionTemplate对象
 	private SqlSession sqlSession;
 	
 	@SuppressWarnings("unchecked")

@@ -4,7 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.study.mybatis.spring.sqlSessionTemplate.UserDao;
+import com.study.mybatis.spring.dao.UserDao;
+
 
 public class TestSqlSessionTemplate {
 

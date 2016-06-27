@@ -9,8 +9,8 @@
 		
 		MyBatis将会从三处加载property：
 		1. 加载properties元素配置的属性
-		2. 加载类路径下或resource/url属性指定的外部property文件
-		3. 加载作为创建SqlSessionFactory方法的Property参数
+		2. 加载类路径下resource/url属性指定的外部property文件
+		3. 加载创建SqlSessionFactory时传递的Property参数对象
 		后面的属性将覆盖前面的同名属性
 	-->
 	<properties resource="db.properties">
@@ -53,6 +53,7 @@
 		map -- Map
 		hashmap -- HashMap
 		list -- List
+		基本数据类型的别名以_开头，其他数据类型以及基本数据类型的包装类别名为小写类名
 	 -->
 	<typeAliases>
 		<typeAlias alias="user" type="com.study.mybatis.domain.User"/>
@@ -61,7 +62,7 @@
 	</typeAliases>
 	
 	<!-- 
-		用于从结果集或设置PreparedStatement时映射java类
+		当从结果集读取数据，或 设置PreparedStatement参数时，需要使用TypeHandler适配数据类型
 		自定义handler，实现TypeHandler接口或继承BaseTypeHandler
 	 -->
 	<typeHandlers>

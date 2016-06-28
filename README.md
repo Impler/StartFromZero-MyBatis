@@ -43,7 +43,7 @@ MyBatis加载Properties规则：
 settings用于全局配置MyBatis的运行时行为，包括缓存、加载方式等。  
 
 |配置项|值域及默认值|含义|
-|:-:|:-:|:-:|
+|:--|:--|:--|
 |cacheEnabled|true/false true|全局控制mapper文件中配置的cache|
 |lazyLoadingEnabled|true/false false|全局控制是否延迟加载依赖属性|
 |aggressiveLazyLoading|true/false true||
@@ -88,7 +88,7 @@ typeAliases的子元素package可以指定包名，MyBatis将会扫描包下面�
 当从结果集读取数据，或 设置PreparedStatement参数时，需要使用TypeHandler适配数据类型。
 
 |Type Handler|Java Types|JDBC Types|
-|:-:|:-:|:-:|
+|:--|:--|:--|
 |BooleanTypeHandler|java.lang.Boolean,boolean|Any compatible BOOLEAN|
 |ByteTypeHandler|java.lang.Byte, byte|Any compatible NUMERIC or BYTE|
 |ShortTypeHandler|java.lang.Short, short|Any compatible NUMERIC or SHORT INTEGER|

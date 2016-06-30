@@ -7,7 +7,7 @@ MyBatis是一种常见的Java持久层框架。减少了大量JDBC操作中机�
 SqlSessionFactoryBuilder基于XML配置文件或Configuration类创建SqlSessionFactory实例。对象用完后即可销毁，不需要长久存活。
 SqlSessionFactory用来创建SqlSession实例，SqlSession实例包含了所有的数据库操作方法。SqlSession是非线程安全的，所以SqlSession实例不应该为类的静态成员或私有成员，最好每个方法都单独创建自己的SqlSession实例，用完后及时close
 
-##XML配置
+##MyBatis XML配置
 
 ###1 properties
 properties用于配置系统所需的键值对。MyBatis支持引用外部properties文件，同时支持properties元素配置，也支持在代码中传入Properties对象。常见配置如下:  
@@ -163,9 +163,40 @@ MyBatis使用ObjectFactory创建对象。
 </objectFactory>
 ```
 ###6 plugins
+MyBatis提供在特定的点拦截SQL执行的接口，默认如下：
+- Executor (update, query, flushStatements, commit, rollback, getTransaction, close, isClosed)
+- arameterHandler (getParameterObject, setParameters)
+- ResultSetHandler (handleResultSets, handleOutputParameters)
+- StatementHandler (prepare, parameterize, batch, update, query)
+-
 ###7 environments
 environment
 transactionManager
 dataSource
 ###8 databaseIdProvider
 ###9 mappers
+
+##Mapper XML文件
+Mybatis Mapper文件是其强大功能的核心，基于xml的SQL组织形式，减少了大量JDBC重复冗余的部分。
+Mapper文件的组成：  
+- cache：配置当前命名空间下的缓存规则
+- cache-ref：引用其他命名空间下的缓存配置
+- resultMap：结果列与实体属性间的映射关系，用于查询结果自动转换为实体bean
+- parameterMap：已废弃。
+- sql：sql片段，可配insert、update、delete、select重复引用
+- insert：定义insert语句
+- update：定义update语句
+- delete：定义delete语句
+- select：定义select语句
+Mapper文件样例：  
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xxx">
+	<insert id="" useGeneratedKeys="true" keyColumn="" keyProperty="" parameterType=""></insert>
+</mapper>
+```
+*NOTE: *namespace不仅可以用来隔离各个Mapper文件间的SQL语句，更好的做法是使用业务接口的全限定类名作为namespace，以便Mybatis准确无误的找到接口与其对应的sql语句。  
+###1 cache

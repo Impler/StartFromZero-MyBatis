@@ -200,3 +200,34 @@ Mapper文件样例：
 ```
 *NOTE: *namespace不仅可以用来隔离各个Mapper文件间的SQL语句，更好的做法是使用业务接口的全限定类名作为namespace，以便Mybatis准确无误的找到接口与其对应的sql语句。  
 ###1 cache
+Mybatis提供强大的和易于配置的Cache功能。
+默认情况下，为每个session提供单独的Cache功能。如果需要提供全局的Cache功能，只需要在Mapper文件中添加cache配置:  
+```xml
+<cache />
+```
+以上默认的配置将产生以下影响：  
+- 所有的select语句都会被缓存
+- 所有的insert、update、delete语句都会清空缓存
+- 缓存采用Least Recently Used (LRU) 原则回收
+- 缓存不会基于特定的时间表回收
+- 缓存最多存储1024个对象（查询结果）
+- 缓存是可读写的，在不同线程下对缓存中取出对象的操作不会互相影响
+Cache所有的配置形式如下：  
+```xml
+<cache
+	eviction="FIFO"
+	flushInterval="60000"
+	size="512"
+	readOnly="true"
+/>
+```  
+1 eviction 可配置的缓存回收算法包括：  
+- LRU Least Recently Used： 默认，最近最少使用的先被回收
+- FIFO First In First Out：按照对象进入缓存的先后顺序回收
+- SOFT Soft Reference：基于垃圾回收机制的soft reference
+- WEAK Weak Reference：基于垃圾回收机制的weak reference  
+2 flushInterval 缓存自动回收时间间隔（秒），默认不设置  
+3 size 缓存可存储的最大对象数量，默认1024  
+4 readOnly 缓存是否可读写  
+- false：默认，返回对象的拷贝，多线程之间互不影响
+- true：返回同一个对象，多线程之间互相影响

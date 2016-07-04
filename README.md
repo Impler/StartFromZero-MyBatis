@@ -231,3 +231,106 @@ Cache所有的配置形式如下：
 4 readOnly 缓存是否可读写  
 - false：默认，返回对象的拷贝，多线程之间互不影响
 - true：返回同一个对象，多线程之间互相影响
+
+###2 select
+select元素用于配置查询语句。形如：  
+```xml
+<select id="selectPerson" parameterType="int" resultType="hashmap">
+	SELECT * FROM PERSON WHERE ID = #{id}
+</select>
+```
+select元素可配置的属性如下：  
+- id：required。当前namespace下的唯一标识符，通过该属性引用配置
+- parameterType：optional。PreparedStatement参数的全限定类名或别名。可以不配，Mybatis会自动识别参数类型。
+- resultType：查询结果对应的全限定类名或别名。对于返回集合的查询，应配置集合中单个元素的类型而不是集合类型。不可与resultMap共用。
+- resultMap：引用外部定义的resultMap。
+- flushCache：默认false。是否在该语句调用时刷新缓存。
+- useCache：默认true。是否启用二级缓存。
+- timeout：默认unset。秒。配置驱动请求等待数据库响应的最大时间。
+- fetchSize：默认unset。一次查询返回的最大记录行数。
+- statementType：默认PREPARED。可选Statement、PreparedStatement、CallableStatement。
+- resultSetType：默认unset。可选FORWARD_ONLY、SCROLL_SENSITIVE、SCROLL_INSENSITIVE。
+- databaseId：
+- resultOrdered：
+- resultSets：应用于返回多结果集的查询语句。为每个结果集设置名称，逗号分隔。
+
+###3 insert, update, delete
+数据操作语句insert、update、delete的配置很相似。形如：  
+```xml
+<insert
+	id="insertAuthor"
+	parameterType="domain.blog.Author"
+	flushCache="true"
+	statementType="PREPARED"
+	keyProperty=""
+	keyColumn=""
+	useGeneratedKeys=""
+	timeout="20">
+<update
+	id="updateAuthor"
+	parameterType="domain.blog.Author"
+	flushCache="true"
+	statementType="PREPARED"
+	timeout="20">
+<delete
+	id="deleteAuthor"
+	parameterType="domain.blog.Author"
+	flushCache="true"
+	statementType="PREPARED"
+	timeout="20">
+```
+可配置的属性如下：  
+- id：同select。
+- parameterType：同select。
+- flushCache：默认true。是否在该语句调用时刷新缓存。
+- timeout：同select。
+- statementType：同select。
+- useGeneratedKeys：默认false。适用于insert和update语句。是否使用数据库内部自生成主键。例如MySQL主键自增。
+- keyProperty：默认unset。适用于insert和update语句。配置主键，多个之间逗号分隔。
+- keyColumn：适用于insert和update语句。只在特定的数据库中使用，如PostgreSQL，主键不是表的第一列。
+- databaseId：同select。
+
+####主键生成策略
+对于insert语句，还有主键相关的属性可以配置。  
+对于支持主键自增的数据库来说，可以通过`useGeneratedKeys="true"`和`keyProperty`来配置，例如：  
+```xml
+<insert id="insertAuthor" useGeneratedKeys="true" keyProperty="id">
+	insert into Author (username,password,email,bio) values (#{username},#{password},#{email},#{bio})
+</insert>
+```
+对于不支持主键自增的数据库来说，使用`selectKey`子属性类配置。  
+selectKey可配置的属性如下：  
+- keyProperty：配置主键，多个逗号分隔。
+- keyColumn：
+- resultType：返回的主键类型。支持任意简单数据类型，包括string、object、map。
+- order:可选BEFORE/AFTER。BEFORE：先执行selectKey，再执行insert。AFTER：先执行insert，在执行selectKey，例如Oracle可以在insert语句中调用序列生成主键。
+- statementType：同select。
+
+完整示例：  
+```xml
+<insert id="insertAuthor">
+	<selectKey keyProperty="id" resultType="int" order="BEFORE">
+		select CAST(RANDOM()*1000000 as INTEGER) a from SYSIBM.SYSDUMMY1
+	</selectKey>
+	insert into Author
+	(id, username, password, email,bio, favourite_section)
+	values
+	(#{id}, #{username}, #{password}, #{email}, #{bio}, #{favouriteSection,jdbcType=VARCHAR})
+</insert>
+```
+
+###4 sql
+sql元素用于定义sql语句片段，只能用于被其他语句引用。例如：  
+```xml
+<!-- 定义 -->
+<sql id="userColumns"> ${alias}.id,${alias}.username,${alias}.password </sql>
+<!--引用-->
+<select id="selectUsers" resultType="map">
+	select
+	<include refid="userColumns"><property name="alias" value="t1"/></include>,
+	<include refid="userColumns"><property name="alias" value="t2"/></include>
+	from some_table t1
+	cross join some_table t2
+</select>
+```
+###5 

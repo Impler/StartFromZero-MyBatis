@@ -1,7 +1,5 @@
 package com.study.mybatis.dao.impl;
 
-
-
 import java.util.List;
 import java.util.Map;
 
@@ -54,6 +52,36 @@ public class UserDaoImpl extends AbstractDao<UserDao, User, Integer> implements 
 	@Override
 	public List<User> selectByRoleAndStatus1(Map<String, List<Integer>> roleAndStatus) {
 		return super.getDao().selectByRoleAndStatus1(roleAndStatus);
+	}
+
+	@Override
+	public List<User> selectByStatusAndRole(int status, int role) {
+		return super.getDao().selectByStatusAndRole(status, role);
+	}
+
+	@Override
+	public List<User> selectByStatusAndRole1(Map<String, Integer> params) {
+		return super.getDao().selectByStatusAndRole1(params);
+	}
+
+	@Override
+	public List<User> selectByStatusAndRole1(int role, int status) {
+		return super.getDao().selectByStatusAndRole1(role, status);
+	}
+
+	@Override
+	public Map<String, Object> simpleSelectMap() {
+		return super.getDao().simpleSelectMap();
+	}
+
+	@Override
+	public User simpleSelectBean() {
+		return super.getDao().simpleSelectBean();
+	}
+
+	@Override
+	public User simpleSelectResultMapConstructor() {
+		return super.getDao().simpleSelectResultMapConstructor();
 	}
 
 }

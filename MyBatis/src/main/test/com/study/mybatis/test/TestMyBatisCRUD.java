@@ -30,6 +30,18 @@ public class TestMyBatisCRUD {
 	}
 	
 	@Test
+	public void testResultTypeMap(){
+		Map<String, Object> user = userDao.simpleSelectMap();
+		System.out.println(user);
+	}
+	
+	@Test
+	public void testResultTypeBean(){
+		User user = userDao.simpleSelectBean();
+		System.out.println(user);
+	}
+	
+	@Test
 	public void testInsert(){
 		User u = new User();
 		u.setUsername("KOBE" + (int)(Math.random() * 10));
@@ -73,6 +85,40 @@ public class TestMyBatisCRUD {
 		for(User u : users){
 			System.out.println("testDelete after: " + u);
 		}
+	}
+	@Test
+	public void testSelectWithMultiParamsByIndex(){
+		int role = 2;
+		int status = 0;
+		List<User> users = userDao.selectByStatusAndRole(status, role);
+		for(User u : users){
+			System.out.println("testSelectWithMultiParamsByIndex after: " + u);
+		}
+	}
+	@Test
+	public void testSelectWithMultiParamsByMap(){
+		Map<String, Integer> params = new HashMap<String, Integer>();
+		params.put("_status", 0);
+		params.put("_role", 2);
+		List<User> users = userDao.selectByStatusAndRole1(params);
+		for(User u : users){
+			System.out.println("testSelectWithMultiParamsByMap after: " + u);
+		}
+	}
+	@Test
+	public void testSelectWithMultiParamsByAnnotation(){
+		int role = 2;
+		int status = 0;
+		List<User> users = userDao.selectByStatusAndRole1(role, status);
+		for(User u : users){
+			System.out.println("testSelectWithMultiParamsByAnnotation after: " + u);
+		}
+	}
+	
+	@Test
+	public void testResultMapConstructor(){
+		User u = userDao.simpleSelectResultMapConstructor();
+		System.out.println("testResultMapConstructor after: " + u);
 	}
 	//test CRUD end 
 	

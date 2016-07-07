@@ -8,6 +8,20 @@ import org.apache.ibatis.annotations.Param;
 import com.study.mybatis.domain.User;
 
 public interface UserDao extends BaseDao<User, Integer>{
+	// test simple select 
+	// return map
+	public Map<String, Object> simpleSelectMap();
+	// return bean
+	public User simpleSelectBean();
+	
+	// test resultmap constructor
+	public User simpleSelectResultMapConstructor();
+	
+	// test multi parameters
+	public List<User> selectByStatusAndRole(int status, int role);
+	public List<User> selectByStatusAndRole1(Map<String, Integer> params);
+	public List<User> selectByStatusAndRole1(@Param("_role")int role, @Param("_status")int status);
+	
 	//only for study dynamic sql test case below
 	//test choose when otherwise
 	public List<User> selectByCondition1(User entity);

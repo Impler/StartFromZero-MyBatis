@@ -13,16 +13,38 @@
 		<result column="role" property="role" typeHandler="GenericEnumHandler" javaType="com.study.mybatis.commenum.UserRoleEnum"/>
 		<result column="createtime" property="createTime"/>
 	</resultMap>
+	
 	<select id="select" resultType="list" resultMap="user">
 		<![CDATA[
 			select * from t_useraccount
 		]]>
 	</select>
+	
+	<select id="simpleSelectMap" resultType="map">
+		select id, username, email from t_useraccount where id = 1;
+	</select>
+	<select id="simpleSelectBean" resultType="user">
+		select id, username, email from t_useraccount where id = 1;
+	</select>
+	
+	<!-- test result map constructor s-->
+	<resultMap type="user" id="testUser">
+		<constructor>
+			<idArg column="id" javaType="int"/>
+			<arg column="username" javaType="string"/>
+			<arg column="email" javaType="string"/>
+		</constructor>
+	</resultMap>
+	<select id="simpleSelectResultMapConstructor" resultMap="testUser">
+		select id, username, email from t_useraccount where id = 1;
+	</select>
+	<!-- test result map constructor e-->
+	
 	<insert id="insert" parameterType="user" useGeneratedKeys="true" keyProperty="id">
 		<![CDATA[
 		insert into t_useraccount 
 			(username, password, telnumber, email, active, role, createtime) 
-			values(#{username}, #{password}, #{telNumber}, #{email}, #{active, typeHandler=GenericEnumHandler}, #{role, typeHandler=GenericEnumHandler}, #{createTime})
+			values(#{username1}, #{password}, #{telNumber}, #{email}, #{active, typeHandler=GenericEnumHandler}, #{role, typeHandler=GenericEnumHandler}, #{createTime})
 		]]>
 	</insert>
 	<select id="selectOneByKey" resultMap="user">
@@ -40,6 +62,19 @@
 			delete from t_useraccount where id=#{id};
 		]]>
 	</delete>
+	<!-- test multi parameters by index -->
+	<select id="selectByStatusAndRole" resultMap="user">
+		<![CDATA[
+			select * from t_useraccount where role = #{1} && active = #{0};
+		]]>
+	</select>
+	<!-- test multi parameters by map/annotation -->
+	<select id="selectByStatusAndRole1" resultMap="user">
+		<![CDATA[
+			select * from t_useraccount where role = #{_role} && active = #{_status};
+		]]>
+	</select>
+	
 	<!-- Dynamic sql -->
 	<!-- if -->
 	<select id="selectByCondition" parameterType="user" resultMap="user">

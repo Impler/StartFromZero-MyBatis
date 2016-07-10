@@ -169,7 +169,7 @@ MyBatis提供在特定的点拦截SQL执行的接口，默认如下：
 - arameterHandler (getParameterObject, setParameters)
 - ResultSetHandler (handleResultSets, handleOutputParameters)
 - StatementHandler (prepare, parameterize, batch, update, query)
--
+
 ###7 environments
 environment
 transactionManager
@@ -367,6 +367,7 @@ Mapper配置中可以指定更加详细的属性信息，便于MyBatis更加准�
 
 MyBatis支持的JDBC数据类型  
 
+| | | | | | |
 |:-:|:-:|:-:|:-:|:-:|:-:|
 |BIT|CHAR|ARRAY|BIGINT|BINARY|BLOG|
 |CHAR|CLOB|CURSOR|DATE|DOUBLE|DECIMAL|
@@ -380,7 +381,7 @@ MyBatis支持的JDBC数据类型
 通过参数在接口方法中的序号（从0开始）来引用。  
 接口方法:  
 ```java
-	public List<User> selectByStatusAndRole(int status, int role);
+public List<User> selectByStatusAndRole(int status, int role);
 ```
 Mapper配置：  
 ```xml
@@ -390,15 +391,15 @@ Mapper配置：
 ```
 调用：  
 ```java
-	int role = 2;
-	int status = 0;
-	List<User> users = userDao.selectByStatusAndRole(status, role);
+int role = 2;
+int status = 0;
+List<User> users = userDao.selectByStatusAndRole(status, role);
 ```
 ####通过参数Map的key引用
 把SQL所需的多个参数存储于Map中，然后在Mapper配置中通过Map的Key引用。  
 接口方法：  
 ```java
-	public List<User> selectByStatusAndRole1(Map<String, Integer> params);
+public List<User> selectByStatusAndRole1(Map<String, Integer> params);
 ```
 Mapper配置：  
 ```xml
@@ -408,16 +409,16 @@ Mapper配置：
 ```
 调用：  
 ```java
-	Map<String, Integer> params = new HashMap<String, Integer>();
-	params.put("_status", 0);
-	params.put("_role", 2);
-	List<User> users = userDao.selectByStatusAndRole1(params);
+Map<String, Integer> params = new HashMap<String, Integer>();
+params.put("_status", 0);
+params.put("_role", 2);
+List<User> users = userDao.selectByStatusAndRole1(params);
 ```
 ####通过Annotation指定参数名(推荐)
 使用`org.apache.ibatis.annotations.Param`指定接口方法参数名称。  
 接口方法:  
 ```java
-	public List<User> selectByStatusAndRole1(@Param("_role")int role, @Param("_status")int status);
+public List<User> selectByStatusAndRole1(@Param("_role")int role, @Param("_status")int status);
 ```
 Mapper配置：  
 ```xml
@@ -427,9 +428,9 @@ Mapper配置：
 ```
 调用：  
 ```java
-	int role = 2;
-	int status = 0;
-	List<User> users = userDao.selectByStatusAndRole1(role, status);
+int role = 2;
+int status = 0;
+List<User> users = userDao.selectByStatusAndRole1(role, status);
 ```
 
 ###6 结果映射
@@ -441,7 +442,9 @@ Mapper配置：
 </select>
 ```
 返回：  
+```log
 {id=1, username=任风, email=12345678@qq.com}  
+```
 
 同样的，一条查询语句可以返回一个Java Bean对象。要求查询结果集列名或别名需与Java Bean中setter方法对应。  
 ```xml
@@ -480,19 +483,19 @@ id和result都能映射一个单独列到Java Bean的简单数据类型的属性
 #####constructor
 constructor元素为创建对象并初始化数据提供了另一种方式。例如为以下对象配置：  
 ```java
-	public class User {
-		//...
-		public User(int id, String username) {
-			//...
-		}
+public class User {
+	//...
+	public User(int id, String username) {
 		//...
 	}
+	//...
+}
 ```
 ```xml
-	<constructor>
-		<idArg column="id" javaType="int"/>
-		<arg column="username" javaType="String"/>
-	</constructor>
+<constructor>
+	<idArg column="id" javaType="int"/>
+	<arg column="username" javaType="String"/>
+</constructor>
 ```
 MyBatis根据javaType以及arg元素顺序匹配构造函数。*测试来看，不支持构造函数参数类型的装箱拆箱，如jdbcType="int"只能识别Integer类型参数而不能识别int类型参数*  
 

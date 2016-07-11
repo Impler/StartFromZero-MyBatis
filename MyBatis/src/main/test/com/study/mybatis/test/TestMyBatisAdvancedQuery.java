@@ -15,18 +15,16 @@ public class TestMyBatisAdvancedQuery {
 	//处理多对一/has-a问题 s
 	@Test
 	public void testSelectBookAndAuthorByNestedSelect(){
-		List<Book> books = bookDao.selectBookAndAuthorByNestedSelect();
-		for(Book book : books){
-			System.out.println(book);
-		}
+		int bookId = 1;
+		Book book = bookDao.selectBookAndAuthorByNestedSelect(bookId);
+		System.out.println("testSelectBookAndAuthorByNestedSelect:" + book);
 	}
 	
 	@Test
 	public void testSelectBookAndAuthorByNestedResult(){
-		List<Book> books = bookDao.selectBookAndAuthorByNestedResult();
-		for(Book book : books){
-			System.out.println(book);
-		}
+		int bookId = 1;
+		Book book = bookDao.selectBookAndAuthorByNestedResult(bookId);
+		System.out.println("testSelectBookAndAuthorByNestedResult: " + book);
 	}
 	
 	/**
@@ -34,9 +32,10 @@ public class TestMyBatisAdvancedQuery {
 	 */
 	@Test
 	public void testSelectBookAndAuthorByProcedure(){
-		List<Book> books = bookDao.selectBookAndAuthorByProcedure();
+		int authorId = 3;
+		List<Book> books = bookDao.selectBookAndAuthorByProcedure(authorId);
 		for(Book book : books){
-			System.out.println(book);
+			System.out.println("testSelectBookAndAuthorByProcedure: " + book);
 		}
 	}
 	//处理多对一/has-a问题 e
@@ -44,18 +43,16 @@ public class TestMyBatisAdvancedQuery {
 	//处理一对多问题 s
 	@Test
 	public void testSelectBookAndPostsByNestedSelect(){
-		List<Book> books = bookDao.selectBookAndPostsByNestedSelect();
-		for(Book book : books){
-			System.out.println(book);
-		}
+		int bookId = 1;
+		Book book = bookDao.selectBookAndPostsByNestedSelect(bookId);
+		System.out.println("testSelectBookAndPostsByNestedSelect: " + book);
 	}
 
 	@Test
 	public void testSelectBookAndPostsByNestedResult(){
-		List<Book> books = bookDao.selectBookAndPostsByNestedResult();
-		for(Book book : books){
-			System.out.println(book);
-		}
+		int bookId = 1;
+		Book book = bookDao.selectBookAndPostsByNestedResult(bookId);
+		System.out.println("testSelectBookAndPostsByNestedResult: " + book);
 	}
 	
 	//处理一对多问题 e

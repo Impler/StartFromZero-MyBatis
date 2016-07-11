@@ -62,18 +62,32 @@
 			delete from t_useraccount where id=#{id};
 		]]>
 	</delete>
+	
 	<!-- test multi parameters by index -->
 	<select id="selectByStatusAndRole" resultMap="user">
 		<![CDATA[
 			select * from t_useraccount where role = #{1} && active = #{0};
 		]]>
 	</select>
+	
 	<!-- test multi parameters by map/annotation -->
 	<select id="selectByStatusAndRole1" resultMap="user">
 		<![CDATA[
 			select * from t_useraccount where role = #{_role} && active = #{_status};
 		]]>
 	</select>
+	
+	<!-- test discriminator -->
+	 <resultMap type="com.study.mybatis.commenum.UserRoleEnum" id="discriminatorResult">
+	 	<discriminator javaType="int" column="role">
+	 		<case value="1" resultType="com.study.mybatis.commenum.UserRoleEnum"></case>
+	 		<case value="2" resultType="com.study.mybatis.commenum.UserRoleEnum"></case>
+	 		<case value="3" resultType="com.study.mybatis.commenum.UserRoleEnum"></case>
+	 	</discriminator>
+	 </resultMap>
+	 <select id="discriminatorUserRole" resultMap="discriminatorResult">
+	 	select role from t_useraccount;
+	 </select>
 	
 	<!-- Dynamic sql -->
 	<!-- if -->
@@ -189,7 +203,7 @@
 		<where>
 			<if test="roleIds!=null and roleIds.size() > 0">
 				role in 
-				<foreach collection="roleIds" item="item" open="(" close=")" separator=",">
+				<foreach collection="roleId" item="item" open="(" close=")" separator=",">
 					#{item}
 				</foreach>
 			</if>

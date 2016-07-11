@@ -16,7 +16,7 @@ import com.study.mybatis.dao.UserDao;
 import com.study.mybatis.dao.impl.UserDaoImpl;
 import com.study.mybatis.domain.User;
 
-public class TestMyBatisCRUD {
+public class TestMyBatisCRUDByMapper {
 
 	private UserDao userDao = new UserDaoImpl();
 	
@@ -119,6 +119,15 @@ public class TestMyBatisCRUD {
 	public void testResultMapConstructor(){
 		User u = userDao.simpleSelectResultMapConstructor();
 		System.out.println("testResultMapConstructor after: " + u);
+	}
+	
+	@Test
+	//TODO not success
+	public void testDiscriminator(){
+		List<UserRoleEnum> roles = userDao.discriminatorUserRole();
+		for(UserRoleEnum role : roles){
+			System.out.println("testDiscriminator: " + role);
+		}
 	}
 	//test CRUD end 
 	

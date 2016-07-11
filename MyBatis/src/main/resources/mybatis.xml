@@ -41,7 +41,7 @@
 		 -->
 	</typeHandlers>
 	<!-- 配置数据源，默认开发环境数据源 -->
-	<environments default="dev">
+	<environments default="dev" >
 		<!-- 开发环境 -->
 		<environment id="dev">
 			<transactionManager type="JDBC"/>
@@ -64,7 +64,8 @@
 		</environment>
 	</environments>
 	<mappers>
-		<mapper resource="UserMapper.xml"/>
-		<mapper resource="BookMapper.xml"/>
+		<mapper resource="mapper/UserMapper.xml"/>
+		<mapper resource="mapper/BookMapper.xml"/>
+		<mapper resource="mapper/PostMapper.xml"/>
 	</mappers>
 </configuration>

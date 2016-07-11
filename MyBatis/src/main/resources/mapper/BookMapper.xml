@@ -33,14 +33,14 @@
 	 	会引起N+1问题，为每条结果集多执行一条sql查询级联数据。可以采用fetchType="lazy"的策略
 	 -->
 	<resultMap type="book" id="bookAndAuthorByNestedSelect" extends="baseBook">
-		<association column="author_id" property="author" select="selectAuthorById" />
+		<association column="author_id" property="author" select="selectAuthorById"/>
 	</resultMap>
 
 	<select id="selectAuthorById" resultMap="author">
 		select * from t_author where author_id = #{id}
 	</select>
 	<select id="selectBookAndAuthorByNestedSelect" resultMap="bookAndAuthorByNestedSelect">
-		select * from t_book;
+		select * from t_book where book_id = #{id};
 	</select>
 	
 	<!-- 
@@ -53,27 +53,27 @@
 		select * from t_book b
 		left join t_author a
 		on a.author_id = b.author_id
+		where b.book_id = #{id}
 	</select>
 	
 	<!-- 
 		使用存储过程，执行两条查询，返回两个结果集，然后在将结果集映射到对象中
 		DELIMITER ;;
-		CREATE DEFINER=`root`@`localhost` PROCEDURE `selectBookAndAuthorProcedure`(IN `authorId` int) 入参变量名不要与任何表中字段名重名
+		CREATE DEFINER=`root`@`localhost` PROCEDURE `selectBookAndAuthorProcedure`(IN `bookId` int) 入参变量名不要与任何表中字段名重名
 		BEGIN
-			select * from t_book where author_id = authorId;
-			select * from t_author where author_id = authorId;
+			select * from t_book where book_id = bookId;
+			select * from t_author;
 		
 		END
 		;;
 		DELIMITER ;
 	 -->
 	<resultMap type="book" id="bookAndAuthorByProcedure" extends="baseBook">
-		<association property="author" resultMap="author" resultSet="authors" javaType="author" column="author_id" foreignColumn="author_id" />
+		<association property="author" resultMap="author" resultSet="author" javaType="author" column="author_id" foreignColumn="author_id" />
 	</resultMap>
-	<select id="selectBookAndAuthorByProcedure" resultSets="books,authors" resultMap="bookAndAuthorByProcedure"
+	<select id="selectBookAndAuthorByProcedure" resultSets="books,author" resultMap="bookAndAuthorByProcedure"
 		statementType="CALLABLE">
-		<!-- 此处hard code数据 -->
-		{call selectBookAndAuthorProcedure(4)}
+		{call selectBookAndAuthorProcedure(#{id, mode=IN})}
 	</select>
 	
 	<!-- 
@@ -90,7 +90,7 @@
 	 	<collection property="posts" select="selectPostByBookId" javaType="list" ofType="post" column="book_id"/>
 	 </resultMap>
 	 <select id="selectBookAndPostsByNestedSelect" resultMap="bookAndPostsByNestedSelect">
-	 	select * from t_book;
+	 	select * from t_book where book_id = #{id};
 	 </select>
 	 <select id="selectPostByBookId" resultMap="post">
 	 	select * from t_post where book_id = #{bookId}
@@ -101,12 +101,13 @@
 	 	内嵌result
 	  -->
 	<resultMap type="book" id="bookAndPostsByNestedResult" extends="baseBook">
-		<collection property="posts" resultMap="post" javaType="list" ofType="post" column="book_id" />
+		<collection property="posts" resultMap="post" javaType="list" ofType="post" />
 	</resultMap>
 	<select id="selectBookAndPostsByNestedResult" resultMap="bookAndPostsByNestedResult">
 		select * from t_book b
 		left join t_post p
 		on b.book_id = p.book_id
+		where b.book_id = #{id}
 	</select>
 	
 	<!-- 

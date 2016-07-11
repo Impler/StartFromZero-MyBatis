@@ -3,10 +3,15 @@ package com.study.mybatis.dao.impl;
 import java.util.List;
 import java.util.Map;
 
+import com.study.mybatis.commenum.UserRoleEnum;
 import com.study.mybatis.dao.AbstractDao;
 import com.study.mybatis.dao.UserDao;
 import com.study.mybatis.domain.User;
-
+/**
+ * test by getMapper
+ * @author Impler
+ *
+ */
 public class UserDaoImpl extends AbstractDao<UserDao, User, Integer> implements UserDao {
 
 	@Override
@@ -82,6 +87,11 @@ public class UserDaoImpl extends AbstractDao<UserDao, User, Integer> implements 
 	@Override
 	public User simpleSelectResultMapConstructor() {
 		return super.getDao().simpleSelectResultMapConstructor();
+	}
+
+	@Override
+	public List<UserRoleEnum> discriminatorUserRole() {
+		return super.getDao().discriminatorUserRole();
 	}
 
 }

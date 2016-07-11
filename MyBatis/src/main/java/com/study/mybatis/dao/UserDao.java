@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.study.mybatis.commenum.UserRoleEnum;
 import com.study.mybatis.domain.User;
 
 public interface UserDao extends BaseDao<User, Integer>{
@@ -22,6 +23,7 @@ public interface UserDao extends BaseDao<User, Integer>{
 	public List<User> selectByStatusAndRole1(Map<String, Integer> params);
 	public List<User> selectByStatusAndRole1(@Param("_role")int role, @Param("_status")int status);
 	
+	public List<UserRoleEnum> discriminatorUserRole();
 	//only for study dynamic sql test case below
 	//test choose when otherwise
 	public List<User> selectByCondition1(User entity);

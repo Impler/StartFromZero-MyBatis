@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.mybatis.dao.PostDao">
+	<resultMap type="post" id="post">
+		<id column="post_id" property="id" javaType="int"/>
+		<result column="book_id" property="book.id" javaType="int"/>
+		<result column="post_username" property="username" />
+		<result column="post_content" property="postContent"/>
+	</resultMap>
+	<!-- 测试selectOne s -->
+	<select id="selectByKey" resultMap="post">
+		select * from t_post where post_id = #{id}
+	</select>
+	<!-- 仅供测试，验证select one只能返回一条记录 -->
+	<select id="selectByKey1" resultMap="post">
+		select * from t_post where post_id > #{id}
+	</select>
+	<!-- 测试selectOne e -->
+	
+	<!-- 测试selectList s-->
+	<select id="selectByCondition" resultMap="post">
+		select * from t_post where post_id > #{id}
+	</select>
+	<!-- 测试selectList e-->
+</mapper>

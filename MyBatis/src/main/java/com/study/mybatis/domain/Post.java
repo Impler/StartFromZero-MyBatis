@@ -10,6 +10,8 @@ public class Post {
 	private int id;
 	private String username;
 	private String postContent;
+	private Book book;
+	
 	public int getId() {
 		return id;
 	}
@@ -28,8 +30,17 @@ public class Post {
 	public void setPostContent(String postContent) {
 		this.postContent = postContent;
 	}
+	
+	public Book getBook() {
+		return book;
+	}
+	public void setBook(Book book) {
+		this.book = book;
+	}
 	@Override
 	public String toString() {
-		return "Post [id=" + id + ", username=" + username + ", postContent=" + postContent + "]";
+		return "Post [id=" + id + ", username=" + username + ", postContent="
+				+ postContent + ", book=" + book + "]";
 	}
+	
 }

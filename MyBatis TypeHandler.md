@@ -49,10 +49,10 @@ public interface TypeHandler<T> {
 
   public abstract T getNullableResult(CallableStatement cs, int columnIndex) throws SQLException;
 ```
-
+###TypeHanlder处理器类
 ####内置TypeHandler
-MyBatis内置的诸多TypeHandler均继承自`BaseTypeHandler`：  
-![TypeHandler层级](resources/images/TypeHandler-hierarchy.png "TypeHandler层级")  
+MyBatis内置的诸多TypeHandler均继承自`BaseTypeHanTypeHandlerdler`：  
+![TypeHandler层级](resources/images/-hierarchy.png "TypeHandler层级")  
 
 |Type Handler|Java Types|JDBC Types|
 |:--|:--|:--|
@@ -79,7 +79,217 @@ MyBatis内置的诸多TypeHandler均继承自`BaseTypeHandler`：
 |ObjectTypeHandler|Any|OTHER, or unspecified|
 |EnumTypeHandler|Enumeration Type|VARCHAR any string compatible type, as the code is stored (not index)|
 |EnumOrdinalTypeHandler|Enumeration Type|Any compatible NUMERIC or DOUBLE, as the position is stored (not the code itself).|
+StringTypeHandler实现示例：  
+```java
+public class StringTypeHandler extends BaseTypeHandler<String> {
 
+  @Override
+  public void setNonNullParameter(PreparedStatement ps, int i, String parameter, JdbcType jdbcType)
+      throws SQLException {
+    ps.setString(i, parameter);
+  }
+
+  @Override
+  public String getNullableResult(ResultSet rs, String columnName)
+      throws SQLException {
+    return rs.getString(columnName);
+  }
+
+  @Override
+  public String getNullableResult(ResultSet rs, int columnIndex)
+      throws SQLException {
+    return rs.getString(columnIndex);
+  }
+
+  @Override
+  public String getNullableResult(CallableStatement cs, int columnIndex)
+      throws SQLException {
+    return cs.getString(columnIndex);
+  }
+}
+```
+####自定义TypeHandler
+尽管MyBatis已经内置了大量的类型处理器，但也可能会有无法满足实际业务需要的情况出现，此时就需要自定义类型处理器。  
+就处理枚举类型来讲，虽然MyBatis提供了`EnumOrdinalTypeHandler`、`EnumTypeHandler`两个类型处理器，但简单分析他们的功能后发现并不能很好的匹配实际需求。  
+`EnumOrdinalTypeHandler`顾名思义，即使用枚举变量的ordinal属性进行设置参数和结果集与枚举类型映射。ordinal属性为枚举变量定义的顺序，从0开始（详细的介绍请查阅Java Doc）。  
+下面来看下核心代码段：  
+```java
+public class EnumOrdinalTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
+
+  public EnumOrdinalTypeHandler(Class<E> type) {
+    this.type = type;
+    this.enums = type.getEnumConstants();
+  }
+
+  @Override
+  public void setNonNullParameter(PreparedStatement ps, int i, E parameter, JdbcType jdbcType) throws SQLException {
+    // ordinal作为参数值
+	ps.setInt(i, parameter.ordinal());
+  }
+
+  @Override
+  public E getNullableResult(ResultSet rs, String columnName) throws SQLException {
+    int i = rs.getInt(columnName);
+	// ordinal作为下标获取枚举对象
+    return enums[i];
+  }
+}
+```
+
+类似的，`EnumTypeHandler`使用枚举变量名设置参数和结果集与枚举类型映射。  
+下面来看下核心代码段：  
+```java
+public class EnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
+
+  public EnumTypeHandler(Class<E> type) {
+    this.type = type;
+  }
+
+  @Override
+  public void setNonNullParameter(PreparedStatement ps, int i, E parameter, JdbcType jdbcType) throws SQLException {
+    // 枚举变量名作为参数
+    ps.setString(i, parameter.name());
+  }
+
+  @Override
+  public E getNullableResult(ResultSet rs, String columnName) throws SQLException {
+    String s = rs.getString(columnName);
+	// 通过枚举变量名匹配枚举对象
+    return s == null ? null : Enum.valueOf(type, s);
+  }
+}
+```
+此外，细心的你可能会发现，这里介绍的`EnumOrdinalTypeHandler`、`EnumTypeHandler`与上面样例中的`StringTypeHandler`实现略有不同。前两者均包含有参构造，而后者没有。仔细想想也不难理解，`StringTypeHandler`处理的目标对象是明确的，即`String`类型；而`java.lang.Enum`是一个抽象的概念，直到具体的枚举类型被创建出来类型才能确定，所以前两者更像是枚举类型处理器工厂，需要传入具体的枚举类型才能工作。  
+`EnumOrdinalTypeHandler`和`EnumTypeHandler`是站在抽象层的类型处理解决方案，虽然可能解决不了实际问题，但也可以为我们提供一定的思路。  
+枚举类型的形式多样，可以是`UserRole.ADMIN`、`UserRole.ADMIN("admin")`、`UserRole.ADMIN(1，"admin")`等。我们可以抽象出实际中所用到的枚举类型的统一接口，然后面向接口创建类型处理器。
+下面以形如`ADMIN(1,"admin")`的枚举类型举例。  
+接口定义如下:  
+```java
+public interface IGenericEnum {
+	/**
+	 * 获得枚举整型部分值，这里作为key值
+	 * @return
+	 */
+	public int getInt();
+	/**
+	 * 获取枚举描述信息
+	 * @return
+	 */
+	public String getString();
+}
+```
+实际业务中的枚举类型：用户角色枚举类型`UserRoleEnum`、用户状态枚举类型`UserActiveStatusEnum`。  
+```java
+// 用户角色枚举类型
+public enum UserRoleEnum implements IGenericEnum{
+
+	SUPERADMIN(1, "superadmin"),
+	ADMIN(2, "admin"),
+	USER(3, "user");
+	
+	private final int roleId;
+	private final String roleName;
+	
+	private UserRoleEnum(int roleId, String roleName){
+		this.roleId = roleId;
+		this.roleName = roleName;
+	}
+
+	@Override
+	public int getInt() {
+		return roleId;
+	}
+
+	@Override
+	public String getString() {
+		return roleName;
+	}
+}
+
+// 用户状态枚举类型
+public enum UserActiveStatusEnum implements IGenericEnum{
+	// 未激活状态
+	INACTIVE(0, "inactive"),
+	// 已激活状态
+	ACTIVE(1, "active");
+
+	private final int key;
+	private final String value;
+
+	private UserActiveStatusEnum(int key, String value) {
+		this.key = key;
+		this.value = value;
+	}
+	@Override
+	public int getInt() {
+		return this.key;
+	}
+
+	@Override
+	public String getString() {
+		return this.value;
+	}
+}
+```
+`UserActiveStatusEnum`类型对应用户表的`ROLE  tinyint(1)`字段，`UserRoleEnum`类型对应用户表的`ACTIVE  tinyint(1)`字段。所以下面定义的类型处理器就负责为数字型的数据库列赋值、将结果集指定列中的数字型数据转换为相应的枚举类型。  
+`IGenericEnum`接口的类型处理器，参考`EnumTypeHandler`的实现：  
+```java
+public class GenericEnumHandler<E extends IGenericEnum> extends BaseTypeHandler<E> {
+
+	private Class<E> type;
+	// 同样需要依赖具体的枚举类型
+	public GenericEnumHandler(Class<E> type) {
+		if (type == null) {
+			throw new IllegalArgumentException("Type argument cannot be null");
+		}
+		this.type = type;
+	}
+
+	@Override
+	public void setNonNullParameter(PreparedStatement ps, int i, E parameter, JdbcType jdbcType) throws SQLException {
+		ps.setInt(i, parameter.getIntValue());
+	}
+
+	@Override
+	public E getNullableResult(ResultSet rs, String columnName) throws SQLException {
+		if (rs.wasNull()) {
+			return null;
+		} else {
+			int key = rs.getInt(columnName);
+			try {
+				return EnumUtil.getEnumConstant(type, key);
+			} catch (Exception ex) {
+				throw new IllegalArgumentException(
+						"Cannot convert " + key + " to " + type.getSimpleName() + " by ordinal value.", ex);
+			}
+		}
+	}
+	
+	// 省略其他getNullableResult重载方法
+}
+
+//涉及的枚举工具类
+public class EnumUtil {
+	/**
+	 * 根据枚举常量的int值，取得对应的枚举对象
+	 * @param type 枚举类class
+	 * @param key int值
+	 * @return
+	 */
+	public static <E extends IGenericEnum> E getEnumConstant(Class<E> type, int key){
+		E[] constants = type.getEnumConstants();
+		if(null == constants){
+			return null;
+		}
+		for(E c : constants){
+			if(c.getIntValue() == key){
+				return c;
+			}
+		}
+		return null;
+	}
+}
+```
 ####TypeHandler注册器 -- TypeHandlerRegistry
 前面介绍了MyBatis内置了大量的类型处理器，那么这些处理器存储在哪，又是以什么方式存储的？那就要来看看`TypeHandlerRegistry`了。  
 #####TypeHandler的存储
@@ -96,6 +306,7 @@ TypeHandler主要存在3个Map中：
 	- key：TypeHandler Class
 	- value：TypeHandler
 
-#####TypeHandler的登记
-
+#####TypeHandler的注册
+上一节介绍了TypeHandler的存储结构，下面就来看下TypeHandler什么时间被MyBatis收录的。  
+MyBatis注册TypeHandler
 ####TypeHandler的匹配

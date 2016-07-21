@@ -21,12 +21,12 @@ public enum UserActiveStatusEnum implements IGenericEnum{
 	}
 
 	@Override
-	public int getInt() {
+	public int getIntValue() {
 		return key;
 	}
 
 	@Override
-	public String getString() {
+	public String getStringValue() {
 		return this.value;
 	}
 }

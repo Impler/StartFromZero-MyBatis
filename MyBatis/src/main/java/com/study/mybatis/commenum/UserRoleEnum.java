@@ -28,12 +28,12 @@ public enum UserRoleEnum implements IGenericEnum{
 	}
 
 	@Override
-	public int getInt() {
+	public int getIntValue() {
 		return roleId;
 	}
 
 	@Override
-	public String getString() {
+	public String getStringValue() {
 		return roleName;
 	}
 

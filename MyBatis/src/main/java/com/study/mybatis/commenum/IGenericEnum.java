@@ -10,10 +10,10 @@ public interface IGenericEnum {
 	 * 获得枚举整型部分值
 	 * @return
 	 */
-	public int getInt();
+	public int getIntValue();
 	/**
 	 * 获取枚举描述信息
 	 * @return
 	 */
-	public String getString();
+	public String getStringValue();
 }

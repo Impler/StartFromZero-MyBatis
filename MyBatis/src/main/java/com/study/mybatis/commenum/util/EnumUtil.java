@@ -17,8 +17,11 @@ public class EnumUtil {
 	 */
 	public static <E extends IGenericEnum> E getEnumConstant(Class<E> type, int key){
 		E[] constants = type.getEnumConstants();
+		if(null == constants){
+			return null;
+		}
 		for(E c : constants){
-			if(c.getInt() == key){
+			if(c.getIntValue() == key){
 				return c;
 			}
 		}

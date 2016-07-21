@@ -306,15 +306,15 @@ public class TestMyBatisCRUDByMapper {
 	public void testSelectByRoleAndStatus() {
 		List<Integer> roleIds = new ArrayList<Integer>();
 		List<Integer> activeIds = new ArrayList<Integer>();
-		roleIds.add(UserRoleEnum.ADMIN.getInt());
-		roleIds.add(UserRoleEnum.USER.getInt());
+		roleIds.add(UserRoleEnum.ADMIN.getIntValue());
+		roleIds.add(UserRoleEnum.USER.getIntValue());
 		List<User> users = userDao.selectByRoleAndStatus(roleIds, activeIds);
 		System.out.println("SelectByRoleAndStatus: roleIds:" + roleIds + ",activeIds:" + activeIds);
 		for(User u : users){
 			System.out.println(u);
 		}
 		
-		activeIds.add(UserActiveStatusEnum.ACTIVE.getInt());
+		activeIds.add(UserActiveStatusEnum.ACTIVE.getIntValue());
 		users = userDao.selectByRoleAndStatus(roleIds, activeIds);
 		System.out.println("SelectByRoleAndStatus: roleIds:" + roleIds + ",activeIds:" + activeIds);
 		for(User u : users){
@@ -329,15 +329,15 @@ public class TestMyBatisCRUDByMapper {
 	public void testSelectByRoleAndStatus1() {
 		List<Integer> roleIds = new ArrayList<Integer>();
 		List<Integer> activeIds = new ArrayList<Integer>();
-		roleIds.add(UserRoleEnum.ADMIN.getInt());
-		roleIds.add(UserRoleEnum.USER.getInt());
+		roleIds.add(UserRoleEnum.ADMIN.getIntValue());
+		roleIds.add(UserRoleEnum.USER.getIntValue());
 		List<User> users = userDao.selectByRoleAndStatus1(roleIds, activeIds);
 		System.out.println("SelectByRoleAndStatus1: roleIds:" + roleIds + ",activeIds:" + activeIds);
 		for(User u : users){
 			System.out.println(u);
 		}
 		
-		activeIds.add(UserActiveStatusEnum.ACTIVE.getInt());
+		activeIds.add(UserActiveStatusEnum.ACTIVE.getIntValue());
 		users = userDao.selectByRoleAndStatus1(roleIds, activeIds);
 		System.out.println("SelectByRoleAndStatus1: roleIds:" + roleIds + ",activeIds:" + activeIds);
 		for(User u : users){
@@ -355,15 +355,15 @@ public class TestMyBatisCRUDByMapper {
 		List<Integer> activeIds = new ArrayList<Integer>();
 		map.put("roleIds", roleIds);
 		map.put("statusIds", activeIds);
-		roleIds.add(UserRoleEnum.ADMIN.getInt());
-		roleIds.add(UserRoleEnum.USER.getInt());
+		roleIds.add(UserRoleEnum.ADMIN.getIntValue());
+		roleIds.add(UserRoleEnum.USER.getIntValue());
 		List<User> users = userDao.selectByRoleAndStatus1(map);
 		System.out.println("SelectByRoleAndStatus1: roleIds:" + roleIds + ",activeIds:" + activeIds);
 		for(User u : users){
 			System.out.println(u);
 		}
 		
-		activeIds.add(UserActiveStatusEnum.ACTIVE.getInt());
+		activeIds.add(UserActiveStatusEnum.ACTIVE.getIntValue());
 		users = userDao.selectByRoleAndStatus1(map);
 		System.out.println("SelectByRoleAndStatus1: roleIds:" + roleIds + ",activeIds:" + activeIds);
 		for(User u : users){

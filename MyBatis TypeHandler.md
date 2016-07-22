@@ -256,12 +256,7 @@ public class GenericEnumHandler<E extends IGenericEnum> extends BaseTypeHandler<
 			return null;
 		} else {
 			int key = rs.getInt(columnName);
-			try {
-				return EnumUtil.getEnumConstant(type, key);
-			} catch (Exception ex) {
-				throw new IllegalArgumentException(
-						"Cannot convert " + key + " to " + type.getSimpleName() + " by ordinal value.", ex);
-			}
+			return EnumUtil.getEnumConstant(type, key);
 		}
 	}
 	
@@ -290,9 +285,9 @@ public class EnumUtil {
 	}
 }
 ```
-####TypeHandler注册器 -- TypeHandlerRegistry
+###TypeHandler注册器 -- TypeHandlerRegistry
 前面介绍了MyBatis内置了大量的类型处理器，那么这些处理器存储在哪，又是以什么方式存储的？那就要来看看`TypeHandlerRegistry`了。  
-#####TypeHandler的存储
+####TypeHandler的存储 TypeHandlerRegistry的内部结构
 TypeHandler主要存在3个Map中：  
 - JDBC_TYPE_HANDLER_MAP：具体JDBC类型的处理器类
 	- key：JdbcType
@@ -306,7 +301,41 @@ TypeHandler主要存在3个Map中：
 	- key：TypeHandler Class
 	- value：TypeHandler
 
-#####TypeHandler的注册
-上一节介绍了TypeHandler的存储结构，下面就来看下TypeHandler什么时间被MyBatis收录的。  
-MyBatis注册TypeHandler
+####TypeHandler的注册
+上一节介绍了TypeHandler的存储结构，下面就来看下怎么配置TypeHandler。对于内置TypeHandler，是由MyBatis自己注册的。我们要关心的就是如何配置自定义TypeHandler。  
+主要在3个地方配置TypeHandler:  
+- 在MyBatis主配置文件中的`<typeHandlers>`元素中配置
+- 在Mapper文件中具体列上配置
+- 在自定义类型处理器上通过注解`@MappedTypes`配置
+
+#####typeHandlers元素
+配置形式：  
+```xml
+<typeHandlers>
+	<package name="xxx"/>
+	<typeHandler handler="xxx" javaType="xxx" jdbcType="xxx"/>
+	<typeHandler handler="xxx" javaType="xxx" jdbcType="xxx"/>
+	...
+</typeHandlers>
+```
+- package：待扫描的自定义类型处理器包名
+- handler：必选，自定义类型处理器的全限定类名或别名
+- javaType：可选，该类型处理器适用的Java类型
+- jdbcType：可选，该类型处理器适用的Jdbc类型
+
+#####Mapper文件配置
+```xml
+<result column="xxx" property="xxx" 
+	typeHandler="xxx" javaType="xxx" jdbcType="xxx" />
+```
+#####注解配置
+```java
+@MappedTypes({XXX.class, XXX.class})
+@MappedJdbcTypes(value={JdbcType.XXX,JdbcType.XXX},includeNullJdbcType=true/false)
+public class XXX extends BaseTypeHandler<XXX> {
+}
+```
+
+####TypeHandler的注册时机
+
 ####TypeHandler的匹配

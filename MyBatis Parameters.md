@@ -3,8 +3,7 @@
 MyBatis 支持在CRUD的SQL语句中动态传入参数，从而构建PreparedStatement对象。其支持传入的参数类型包括基本类型、自定义类型、List以及Map等。不同的参数类型以及参数个数可能对应的Mapper配置略有不同，在此进行分类总结。  
 调用Mybatis 执行CRUD操作主要有两种方式，一是通过SqlSession API方法，如selectOne、selectList等，另外一种是通过SqlSession.getMapper()调用接口方法。下文中所说的接口方法对应Mapper的调用方式，SqlSession API对应调用SqlSession selectOne、selectList等的方式。
 ### 基本数据类型
-#### 在Dao层接口方法中使用基本数据类型作为参数
-##### 单个基本数据类型参数
+#### 单个基本数据类型参数
 接口：
 ```java
 	User selectById(int id);
@@ -21,7 +20,7 @@ Mapper:
 	</select>
 ```
 这种情况下，Mapper中对应的参数名可以随意写，Mybatis并不关心方法参数名或实参参数名是什么。
-##### 多个基本数据类型参数
+#### 多个基本数据类型参数
 接口：
 ```java
 	List<User> selectByStatusAndRole(int status, int role);
@@ -62,12 +61,8 @@ Mapper:
 		select * from t_useraccount where role = #{_role} && active = #{_status};
 	</select>
 ```
-#### 在SqlSession API的接口方法中使用基本数据类型作为参数
-##### 单个基本类型参数
-同接口方法。
-##### 多个基本类型参数
+注意SqlSession API接口方法中，仅能传递一个Object 类型参数，不支持传递多个参数，如果Dao接口方法中存在多个参数，需要将多个参数封装成对象或Map，下面介绍。
 ### 自定义类型
-####
 ### List
 ### Map类型
 ### 总结

@@ -3,8 +3,11 @@ package com.study.mybatis.dao.impl;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.session.SqlSession;
+
 import com.study.mybatis.commenum.UserRoleEnum;
 import com.study.mybatis.dao.AbstractDao;
+import com.study.mybatis.dao.SqlSessionUtil;
 import com.study.mybatis.dao.UserDao;
 import com.study.mybatis.domain.User;
 /**
@@ -92,6 +95,24 @@ public class UserDaoImpl extends AbstractDao<UserDao, User, Integer> implements 
 	@Override
 	public List<UserRoleEnum> discriminatorUserRole() {
 		return super.getDao().discriminatorUserRole();
+	}
+
+	@Override
+	public User selectById(int id) {
+//      两种形式均可正常运行
+//		形式一
+		SqlSession session = SqlSessionUtil.getSession();
+		return session.selectOne(UserDao.class.getName() + ".selectById", id);
+//		形式二
+//		return super.getDao().selectById(id);
+	}
+
+	@Override
+	public User testFoo(int foo, int bar) {
+		int a = 3;
+		SqlSession session = SqlSessionUtil.getSession();
+		User user = session.selectOne(UserDao.class.getName() + ".testFoo", a);
+		return user;
 	}
 
 }

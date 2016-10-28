@@ -46,7 +46,7 @@
 		<![CDATA[
 		insert into t_useraccount 
 			(username, password, telnumber, email, active, role, createtime) 
-			values(#{username1}, #{password}, #{telNumber}, #{email}, #{active, typeHandler=GenericEnumHandler}, #{role, typeHandler=GenericEnumHandler}, #{createTime})
+			values(#{username}, #{password}, #{telNumber}, #{email}, #{active, typeHandler=GenericEnumHandler}, #{role, typeHandler=GenericEnumHandler}, #{createTime})
 		]]>
 	</insert>
 	<select id="selectOneByKey" resultMap="user">
@@ -216,5 +216,16 @@
 				</foreach>
 			</if>
 		</where>
+	</select>
+	
+	<!-- 单个基本数据类型作为参数  -->
+	<select id="selectById" resultMap="user">
+		select * from t_useraccount where id = #{a}
+	</select>
+	<!-- 多个基本数据类型作为参数 , 见selectByStatusAndRole系列-->
+	
+	<!-- 向SqlSession API中传入基本类型参数 -->
+	<select id="testFoo" resultMap="user">
+		select * from t_useraccount where id = #{0}
 	</select>
 </mapper>

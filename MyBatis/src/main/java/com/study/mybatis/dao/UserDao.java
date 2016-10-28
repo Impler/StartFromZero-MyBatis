@@ -44,4 +44,12 @@ public interface UserDao extends BaseDao<User, Integer>{
 	public List<User> selectByRoleAndStatus1(@Param("roleIds")List<Integer> roleIds, @Param("statusIds")List<Integer> statusIds);
 	public List<User> selectByRoleAndStatus1(Map<String, List<Integer>> roleAndStatus);
 	//test foreach e
+	
+	// 单个基本数据类型参数
+	User selectById(int id);
+	// 多个基本类型参数见 selectByStatusAndRole
+	
+	//在SqlSession API的方法中传入基本类型参数，如果Dao层方法参数为最终传入的参数，那么情况同selectById，否则无法辨别参数
+	User testFoo(int foo, int bar);
+	
 }

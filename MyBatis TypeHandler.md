@@ -1,5 +1,5 @@
-#StartFromZero-MyBatis
-##MyBatis TypeHandler
+# StartFromZero-MyBatis
+## MyBatis TypeHandler
 *draft:*
 - 功能介绍
 - handler接口解读，包括typehandler接口、typeregistry、
@@ -9,7 +9,7 @@
 - 不足：无法创建带有有参构造的handler，解决办法
 - 处理resultset的完整流程
 
-###TypeHandler简介
+### TypeHandler简介
 现实业务中，Java对象与数据库表字段之间并不是完全匹配的，可能表中存储的只是Java对象的一个具有代表性的属性值。这样在通过JDBC进行数据库操作时，就涉及怎样把Java对象存储到数据库，怎样把数据库中某个字段的值对应上某个Java对象的问题。  
 预编译的SQL语句对象`PreparedStatement`提供了多个设置不同类型参数的方法，如：  
 ```java
@@ -26,8 +26,8 @@ getInt(String columnLabel)
 ```
 MyBatis作为优秀的持久层框架，不可能让使用者针对不同的业务场景写这些底层枯燥臃肿的代码。MyBatis提供了类型转换的机制，统一针对具体的类型设定具体的类型处理器，使用者只需要关心如何在Java类与类型处理器之间进行映射即可。此外，MyBatis内置了大量的类型处理器类，几乎涵盖了所有常见的Java类型。使用者可以视具体情况自定义具体的类型处理器。  
 
-###TypeHandler接口
-####TypeHandler接口
+### TypeHandler接口
+#### TypeHandler接口
 ![TypeHandler类图](resources/images/TypeHandler-TypeHandler.png "TypeHandler类图")  
 ```java
 public interface TypeHandler<T> {
@@ -37,7 +37,7 @@ public interface TypeHandler<T> {
   T getResult(CallableStatement cs, int columnIndex) throws SQLException;
 }
 ```
-####BaseTypeHandler接口
+#### BaseTypeHandler接口
 ![BaseTypeHandler类图](resources/images/TypeHandler-BaseTypeHandler.png "BaseTypeHandler类图")  
 `BaseTypeHandler`抽象类实现了`TypeHandler`接口，对其进一步封装，提供了预处理参数为空和结果集为空情况下的默认处理，对外细化了4个方法接口，分别为预处理参数非空处理方法，以及结果集处理的3个重载方法：  
 ```java
@@ -49,8 +49,8 @@ public interface TypeHandler<T> {
 
   public abstract T getNullableResult(CallableStatement cs, int columnIndex) throws SQLException;
 ```
-###TypeHanlder处理器类
-####内置TypeHandler
+### TypeHanlder处理器类
+#### 内置TypeHandler
 MyBatis内置的诸多TypeHandler均继承自`BaseTypeHanTypeHandlerdler`：  
 ![TypeHandler层级](resources/images/-hierarchy.png "TypeHandler层级")  
 
@@ -108,7 +108,7 @@ public class StringTypeHandler extends BaseTypeHandler<String> {
   }
 }
 ```
-####自定义TypeHandler
+#### 自定义TypeHandler
 尽管MyBatis已经内置了大量的类型处理器，但也可能会有无法满足实际业务需要的情况出现，此时就需要自定义类型处理器。  
 就处理枚举类型来讲，虽然MyBatis提供了`EnumOrdinalTypeHandler`、`EnumTypeHandler`两个类型处理器，但简单分析他们的功能后发现并不能很好的匹配实际需求。  
 `EnumOrdinalTypeHandler`顾名思义，即使用枚举变量的ordinal属性进行设置参数和结果集与枚举类型映射。ordinal属性为枚举变量定义的顺序，从0开始（详细的介绍请查阅Java Doc）。  
@@ -285,9 +285,9 @@ public class EnumUtil {
 	}
 }
 ```
-###TypeHandler注册器 -- TypeHandlerRegistry
+### TypeHandler存储器 -- TypeHandlerRegistry
 前面介绍了MyBatis内置了大量的类型处理器，那么这些处理器存储在哪，又是以什么方式存储的？那就要来看看`TypeHandlerRegistry`了。  
-####TypeHandler的存储 TypeHandlerRegistry的内部结构
+#### TypeHandler的存储 TypeHandlerRegistry的内部结构
 TypeHandler主要存在3个Map中：  
 - JDBC_TYPE_HANDLER_MAP：具体JDBC类型的处理器类
 	- key：JdbcType
@@ -301,14 +301,14 @@ TypeHandler主要存在3个Map中：
 	- key：TypeHandler Class
 	- value：TypeHandler
 
-####TypeHandler的注册
+#### TypeHandler的注册
 上一节介绍了TypeHandler的存储结构，下面就来看下怎么配置TypeHandler。对于内置TypeHandler，是由MyBatis自己注册的。我们要关心的就是如何配置自定义TypeHandler。  
 主要在3个地方配置TypeHandler:  
 - 在MyBatis主配置文件中的`<typeHandlers>`元素中配置
 - 在Mapper文件中具体列上配置
 - 在自定义类型处理器上通过注解`@MappedTypes`配置
 
-#####typeHandlers元素
+##### typeHandlers元素
 配置形式：  
 ```xml
 <typeHandlers>
@@ -323,12 +323,12 @@ TypeHandler主要存在3个Map中：
 - javaType：可选，该类型处理器适用的Java类型
 - jdbcType：可选，该类型处理器适用的Jdbc类型
 
-#####Mapper文件配置
+##### Mapper文件配置
 ```xml
 <result column="xxx" property="xxx" 
 	typeHandler="xxx" javaType="xxx" jdbcType="xxx" />
 ```
-#####注解配置
+##### 注解配置
 ```java
 @MappedTypes({XXX.class, XXX.class})
 @MappedJdbcTypes(value={JdbcType.XXX,JdbcType.XXX},includeNullJdbcType=true/false)
@@ -336,6 +336,11 @@ public class XXX extends BaseTypeHandler<XXX> {
 }
 ```
 
-####TypeHandler的注册时机
+#### TypeHandler的注册时机
+##### 注册内置TypeHandler
+内置的TypeHandler在TypeHandlerRegistry对象创建时，即被注册。
+##### 注册MyBatis配置文件中配置的TypeHandler
+在MyBatis xml配置文件中配置的TypeHandler在创建SqlSessionFactory对象时，解析`<typeHandlers>`节点时注册。
+##### 注册MyBatis Mapper文件中特定列上的TypeHandler
 
-####TypeHandler的匹配
+#### TypeHandler的匹配

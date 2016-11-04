@@ -43,6 +43,11 @@
 		 <typeHandler handler="GenericEnumHandler" javaType="com.study.mybatis.commenum.UserRoleEnum"/>
 		 <typeHandler handler="GenericEnumHandler" javaType="com.study.mybatis.commenum.UserActiveStatusEnum"/> 
 	</typeHandlers>
+	<!-- 配置插件-->
+	<plugins>
+		<plugin interceptor="com.study.mybatis.plugin.PaginationPlugin" />
+	</plugins>
+
 	<!-- 配置数据源，默认开发环境数据源 -->
 	<environments default="dev" >
 		<!-- 开发环境 -->

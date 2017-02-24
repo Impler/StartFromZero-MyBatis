@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="region">
+
+	<resultMap type="Region" id="region">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+	</resultMap>
+	<resultMap type="Image" id="image">
+		<id column="id" property="id"/>
+		<result column="filename" property="filename"/>
+	</resultMap>
+	
+	<resultMap id="childRegion1" type="Region" extends="region">
+		<collection property="childRegions" ofType="Region" javaType="list" columnPrefix="child_">
+			<id column="id" property="id"/>
+			<result column="name" property="name"/>
+			<!-- 此处的 columnPrefix是在上层columnPrefix的基础上的，所以sql里面的字段应该写成child_img_xxx-->
+			<collection property="images" ofType="Image" columnPrefix="img_" resultMap="image" javaType="list"></collection>
+		</collection>
+	</resultMap>
+	<!-- 等价的配置 -->
+	<resultMap  id="exRegion" type="Region" extends="region">
+		<!-- 子元素在sql中的列明应考虑当前元素所处的位置，是否要拼接上层的columnPrefix -->
+		<collection property="images" ofType="Image" columnPrefix="img_" resultMap="image" javaType="list"></collection>
+	</resultMap>
+	
+	<resultMap id="childRegion2" type="Region" extends="region">
+		<collection property="childRegions" ofType="Region" resultMap="exRegion" javaType="list" columnPrefix="child_"></collection>
+	</resultMap>
+	
+	<!-- 反例
+	<resultMap type="Region" id="childRegion" extends="region">
+		
+		1. 如果collection元素配置了resultMap属性， 那么将会忽略collection子元素中的配置，以resultMap为准。
+			此处的images collection为无效配置
+			
+		2. 如果collection元素配置了columnPrefix属性， 那么子元素中用到的列都是以当前columnPrefix为基础的。
+			如img的列明应该为 父columnPrefix+当前columnPrefix+实际列名: child_img_filename
+		
+		<collection property="childRegions" columnPrefix="child_" resultMap="region" ofType="Region" javaType="list">
+			<collection property="images" ofType="Image" columnPrefix="img_" resultMap="image" javaType="list"></collection>
+		</collection>
+	</resultMap>
+	 -->
+	<select id="queryRegions1" resultMap="childRegion1">
+		SELECT * 
+		FROM T_REGION R
+		LEFT JOIN(
+			SELECT R.ID AS CHILD_ID, R.PARENT_ID AS CHILD_PARENT_ID, R.NAME AS CHILD_NAME, 
+			I.ID AS CHILD_IMG_ID, I.TITLE AS CHILD_IMG_TITLE, I.FILENAME AS CHILD_IMG_FILENAME
+			FROM T_REGION R
+			LEFT JOIN T_IMAGE I
+			ON R.ID = I.REF_ID
+			WHERE R.LEVEL = 2
+		) T
+		ON R.ID = T.CHILD_PARENT_ID
+		WHERE R.LEVEL = 1
+	</select>
+	
+	<!-- 同样的sql -->
+	<select id="queryRegions2" resultMap="childRegion2">
+		SELECT * 
+		FROM T_REGION R
+		LEFT JOIN(
+			SELECT R.ID AS CHILD_ID, R.PARENT_ID AS CHILD_PARENT_ID, R.NAME AS CHILD_NAME, 
+			I.ID AS CHILD_IMG_ID, I.TITLE AS CHILD_IMG_TITLE, I.FILENAME AS CHILD_IMG_FILENAME
+			FROM T_REGION R
+			LEFT JOIN T_IMAGE I
+			ON R.ID = I.REF_ID
+			WHERE R.LEVEL = 2
+		) T
+		ON R.ID = T.CHILD_PARENT_ID
+		WHERE R.LEVEL = 1
+	</select>
+</mapper>

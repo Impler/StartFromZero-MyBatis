@@ -30,6 +30,8 @@
 		<typeAlias type="com.study.mybatis.domain.Book" alias="book"/>
 		<typeAlias type="com.study.mybatis.domain.Author" alias="author"/>
 		<typeAlias type="com.study.mybatis.domain.Post" alias="post"/>
+		<typeAlias type="com.study.mybatis.domain.Region" alias="Region"/>
+		<typeAlias type="com.study.mybatis.domain.Image" alias="Image"/>
 		<typeAlias type="com.study.mybatis.typehandler.GenericEnumHandler" alias="GenericEnumHandler"/>
 	</typeAliases>
 	<typeHandlers>
@@ -72,8 +74,9 @@
 		</environment>
 	</environments>
 	<mappers>
-		<mapper resource="mapper/UserMapper.xml"/>
+	<!-- 	<mapper resource="mapper/UserMapper.xml"/>
 		<mapper resource="mapper/BookMapper.xml"/>
-		<mapper resource="mapper/PostMapper.xml"/>
+		<mapper resource="mapper/PostMapper.xml"/> -->
+		<mapper resource="mapper/RegionMapper.xml"/>
 	</mappers>
 </configuration>
